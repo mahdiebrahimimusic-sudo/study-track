@@ -52,6 +52,30 @@ canvas{max-width:100%}
 .daily-empty{font-size:11px;color:var(--muted);padding:8px 0}
 @media(min-width:600px){.daily-book{padding:9px 12px}}
 
+
+.study-timer-box{margin-top:22px;padding:16px;border:1px solid var(--line);border-radius:15px;background:#0d1420}
+.timer-controls label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:bold;max-width:420px}
+.timer-controls select{width:100%;border:1px solid #2b3749;border-radius:9px;padding:10px;background:#0b1019;color:var(--ink)}
+.timer-display{font-size:clamp(30px,6vw,44px);font-weight:700;letter-spacing:1px;text-align:center;direction:ltr;color:#c4b5fd;padding:4px 0 12px;font-variant-numeric:tabular-nums}
+.timer-arc-wrap{width:min(100%,360px);margin:12px auto 0;position:relative;text-align:center}
+.timer-break{min-height:28px;color:#35c46a;font-size:15px;font-weight:800;margin-bottom:2px}
+.timer-arc{display:block;width:100%;height:auto;overflow:visible}
+.timer-arc-track,.timer-arc-fill{fill:none;stroke-width:10;stroke-linecap:round}
+.timer-arc-track{stroke:#25263b}.timer-arc-fill{stroke:url(#timerArcGradient);stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset .25s linear}
+.timer-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.timer-actions button:disabled{opacity:.45;cursor:not-allowed}
+.book.is-complete{border-color:#23864b!important}.book.is-complete .pct{color:#35c46a!important}.book.is-complete .fill{background:linear-gradient(90deg,#16803d,#4ade80)!important}.book.is-complete .book-title-line:after{content:' ✓';color:#35c46a;font-weight:800}
+.timer-complete .timer-display,.timer-complete .timer-break{color:#35c46a!important}
+.timer-complete .timer-arc-fill{stroke:#35c46a!important}
+.timer-complete .timer-arc-track{stroke:#1e5535!important}
+.weekly-time-box{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:15px;background:var(--surface)}
+.weekly-time-chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;align-items:end;margin-top:16px;min-height:190px}
+.weekly-time-day{border:1px solid var(--line);border-radius:10px;background:#0d1420;color:var(--ink);padding:9px 5px 7px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px;min-width:0;min-height:170px}
+.weekly-time-day:hover{border-color:#8b5cf6;background:#15152a}
+.weekly-time-bar-area{height:105px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.weekly-time-bar{width:min(28px,70%);min-height:3px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#e9d5ff,#7c3aed)}
+.weekly-time-label{font-size:10px;text-align:center;line-height:1.5;overflow-wrap:anywhere}.weekly-time-value{font-size:10px;color:#c4b5fd;font-weight:700;direction:rtl;text-align:center}
+.study-modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:center;justify-content:center;padding:16px}.study-modal.open{display:flex}.study-modal-card{width:min(520px,100%);max-height:85vh;overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 60px #0008}.study-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.study-modal-head h3{margin:0;font-size:17px}.study-modal-close{border:1px solid var(--line);background:#151e2c;color:var(--ink);border-radius:8px;padding:4px 10px}.study-detail-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}.study-detail-row span:first-child{overflow-wrap:anywhere}.study-motivation{margin:15px 0 0;color:#aebbd0;font-size:11px;text-align:center}
+@media(max-width:700px){.study-timer-box{padding:12px}.timer-actions{gap:6px}.weekly-time-box{padding:12px}.weekly-time-chart{gap:4px}.weekly-time-day{padding:7px 2px}.weekly-time-label{font-size:9px}.weekly-time-value{font-size:9px}.study-modal-card{padding:15px}}
 </style>
 </head>
 <body>
@@ -62,13 +86,31 @@ canvas{max-width:100%}
  <article class="stat"><span class="ico">📚</span><small>کتاب‌های فعال</small><strong id="statBooks">۰</strong></article>
  <article class="stat"><span class="ico">📖</span><small>صفحات خوانده‌شده</small><strong id="statPages">۰</strong></article>
  <article class="stat"><span class="ico">📈</span><small>میانگین پیشرفت</small><strong id="statProgress">۰٪</strong></article>
- 
+ <article class="stat"><span class="ico">⏱️</span><small>زمان مطالعه امروز</small><strong id="statStudyTime">۰ دقیقه</strong></article>
 </section>
 <nav class="tabs"><button class="tab active" data-tab="dashboard">نمای کلی</button><button class="tab" data-tab="books">کتاب‌ها</button><button class="tab" data-tab="sessions">ثبت صفحات</button><button class="tab" data-tab="backup">پشتیبان‌گیری</button></nav>
 <section class="panel" id="panel-dashboard">
  <div class="heading"><div><h3>پیشرفت کتاب‌ها</h3><p class="muted">وضعیت هر کتاب در یک نگاه</p></div><button class="btn primary" data-goto="books">+ افزودن کتاب</button></div>
  <div class="books" id="dashBooks"></div>
- <div class="heading" style="margin-top:22px"><div><h3>گزارش روزانه کتاب‌ها</h3><p class="muted">تعداد صفحات هر کتاب در هر یک از ۷ روز اخیر</p></div></div><div id="weeklyReport" class="items"></div>
+ <div class="study-timer-box">
+  <div class="heading"><div><h3>⏱️ زمان‌سنج مطالعه</h3><p class="muted">زمان مطالعه را برای یکی از کتاب‌ها ثبت کن.</p></div></div>
+  <div class="timer-controls"><label>کتاب مورد مطالعه<select id="timerBook"><option value="">انتخاب کتاب</option></select></label></div>
+  <div class="timer-arc-wrap">
+   <div class="timer-break" id="timerBreakMessage" aria-live="polite"></div>
+   <svg class="timer-arc" viewBox="0 0 200 108" role="img" aria-label="پیشرفت زمان یک ساعت مطالعه">
+    <defs><linearGradient id="timerArcGradient" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="52%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#e9d5ff"/></linearGradient></defs>
+    <path class="timer-arc-track" d="M 12 100 A 88 88 0 0 1 188 100" pathLength="283"/>
+    <path class="timer-arc-fill" id="timerArcFill" d="M 12 100 A 88 88 0 0 1 188 100" pathLength="283"/>
+   </svg>
+   <div class="timer-display" id="timerDisplay">۰۰:۰۰</div>
+  </div>
+  <div class="timer-actions"><button class="btn primary" id="timerStartPause" type="button">شروع مطالعه</button><button class="btn outline" id="timerSave" type="button" disabled>ثبت زمان</button><button class="btn ghost" id="timerReset" type="button">بازنشانی</button></div>
+  <p class="hint" id="timerHint">برای شروع، یک کتاب انتخاب کن.</p>
+ </div>
+ <section class="weekly-time-box">
+  <div class="heading"><div><h3>📊 نمودار زمان مطالعه هفتگی</h3><p class="muted">برای دیدن جزئیات هر روز، روی ستون آن کلیک کن.</p></div></div>
+  <div id="weeklyTimeChart" class="weekly-time-chart"></div>
+ </section>
 </section>
 <section class="panel hidden" id="panel-books">
  <div class="heading"><div><h3>کتاب‌های من</h3><p class="muted">تعداد صفحات و درصد پیشرفت را مدیریت کن.</p></div></div>
@@ -97,7 +139,9 @@ canvas{max-width:100%}
  <p class="hint">اطلاعات در مرورگر ذخیره می‌شود و در صورت اتصال به اینترنت با فضای ابری همگام می‌شود. فایل پشتیبان را هم نگه دار.</p>
 </section>
 </main>
-<footer><span>StudyTrack · نسخه تک‌فایلی</span><span>ذخیره محلی + همگام‌سازی ابری 🌿</span></footer><div id="toast" class="toast" role="status"></div>
+<footer><span>StudyTrack · نسخه تک‌فایلی</span><span>ذخیره محلی + همگام‌سازی ابری 🌿</span></footer>
+<div id="studyDayModal" class="study-modal" role="dialog" aria-modal="true" aria-labelledby="studyDayTitle"><div class="study-modal-card"><div class="study-modal-head"><h3 id="studyDayTitle">جزئیات مطالعه</h3><button type="button" class="study-modal-close" id="studyDayClose">بستن ✕</button></div><div id="studyDayDetails"></div><p class="study-motivation">هر صفحه‌ای که امروز می‌خوانی، تو را یک قدم به هدفت نزدیک‌تر می‌کند 🌱</p></div></div>
+<div id="toast" class="toast" role="status"></div>
 <script>
 (()=>{"use strict";
 const KEY="studytrack-final-v1";
@@ -112,8 +156,9 @@ const id=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
 const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const datefmt=s=>s?new Intl.DateTimeFormat("fa-IR",{year:"numeric",month:"short",day:"numeric"}).format(new Date(s+"T12:00:00")):"بدون تاریخ";
-let state={books:[],sessions:[],plans:[]};
-function load(){try{let raw=localStorage.getItem(KEY);if(raw){state={...state,...JSON.parse(raw)};state.sessions=(state.sessions||[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q});state.plans=(state.plans||[]).map(p=>{let q={...p};delete q.minutes;return q})}}catch(e){alert("خواندن اطلاعات ذخیره‌شده ممکن نشد؛ شاید مرورگر حالت خصوصی دارد.")}}
+let state={books:[],sessions:[],plans:[],timeLogs:[]};
+let timerElapsed=0,timerStartedAt=null,timerInterval=null,timerBreak=false;
+function load(){try{let raw=localStorage.getItem(KEY);if(raw){state={...state,...JSON.parse(raw)};state.sessions=(state.sessions||[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q});state.plans=(state.plans||[]).map(p=>{let q={...p};delete q.minutes;return q});state.timeLogs=Array.isArray(state.timeLogs)?state.timeLogs:[]}}catch(e){alert("خواندن اطلاعات ذخیره‌شده ممکن نشد؛ شاید مرورگر حالت خصوصی دارد.")}}
 function save(){
  try{localStorage.setItem(KEY,JSON.stringify(state))}
  catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}
@@ -161,7 +206,8 @@ async function initializeCloudSync(){
    state = {
     books: Array.isArray(remote.books) ? remote.books : [],
     sessions: Array.isArray(remote.sessions) ? remote.sessions : [],
-    plans: Array.isArray(remote.plans) ? remote.plans : []
+    plans: Array.isArray(remote.plans) ? remote.plans : [],
+     timeLogs: Array.isArray(remote.timeLogs) ? remote.timeLogs : []
    };
 
    try{
@@ -195,14 +241,29 @@ async function initializeCloudSync(){
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2300)}
 function pct(b){return b.total?Math.min(100,Math.round((Number(b.current)||0)/Number(b.total)*100)):0}
 function empty(title,desc){return `<div class="empty"><b>${esc(title)}</b>${esc(desc||"")}</div>`}
-function bookCard(b){let p=pct(b),left=Math.max(0,b.total-b.current);return `<article class="book"><div class="booktop"><div><h4>${esc(b.title)}</h4></div></div><div class="progress-line"><span class="pct">${fa(p)}٪</span><div class="track"><div class="fill" style="width:${p}%"></div></div></div><div class="meta"><span>${fa(b.current)} صفحه خوانده‌شده</span><span>${fa(left)} صفحه باقی‌مانده</span><span>${fa(b.total)} صفحه در کل</span></div><div class="actions"><button class="mini" data-edit-book="${b.id}">ویرایش</button><button class="mini" data-page="${b.id}">ثبت صفحه فعلی</button><button class="mini red" data-del-book="${b.id}">حذف</button></div></article>`}
-function refresh(){renderStats();renderBookOptions();renderBooks();renderSessions();drawCharts()}
+function bookCard(b){let p=pct(b),left=Math.max(0,b.total-b.current),complete=p>=100;return `<article class="book ${complete?'is-complete':''}"><div class="booktop"><div class="book-title-line"><h4>${esc(b.title)}</h4></div></div><div class="progress-line"><span class="pct">${fa(p)}٪</span><div class="track"><div class="fill" style="width:${p}%"></div></div></div><div class="meta"><span>${fa(b.current)} صفحه خوانده‌شده</span><span>${fa(left)} صفحه باقی‌مانده</span><span>${fa(b.total)} صفحه در کل</span></div><div class="actions"><button class="mini" data-edit-book="${b.id}">ویرایش</button><button class="mini" data-page="${b.id}">ثبت صفحه فعلی</button><button class="mini red" data-del-book="${b.id}">حذف</button></div></article>`}
+function refresh(){renderStats();renderBookOptions();renderTimerBookOptions();renderBooks();renderSessions();drawCharts();updateDailyStudy()}
+function formatDuration(seconds){let minutes=Math.min(60,Math.floor(Math.max(0,seconds)/60));return `${fa(Math.floor(minutes/60)).padStart?fa(Math.floor(minutes/60)).padStart(2,"۰"):fa(Math.floor(minutes/60))}:${fa(minutes%60).padStart?fa(minutes%60).padStart(2,"۰"):fa(minutes%60)}`}
+function timerCurrentElapsed(){return timerElapsed+(timerStartedAt?Math.floor((Date.now()-timerStartedAt)/1000):0)}
+function renderTimerBookOptions(){let el=$("timerBook"),selected=el.value;el.innerHTML='<option value="">انتخاب کتاب</option>'+state.books.map(b=>`<option value="${esc(b.id)}">${esc(b.title)}</option>`).join("");if(state.books.some(b=>b.id===selected))el.value=selected;else if(!timerStartedAt)el.value=""}
+function updateTimerUI(){let seconds=Math.min(3600,timerCurrentElapsed()),progress=seconds/3600,box=$("timerArcFill").closest(".study-timer-box");$("timerDisplay").textContent=formatDuration(seconds);$("timerArcFill").style.strokeDashoffset=String(283*(1-progress));box.classList.toggle("timer-complete",timerBreak);$("timerBreakMessage").textContent=timerBreak?"وقت استراحته :)":"";$("timerStartPause").textContent=timerBreak?"ادامه مطالعه":timerStartedAt?"توقف موقت":seconds>0?"ادامه مطالعه":"شروع مطالعه";$("timerSave").disabled=seconds<1||!!timerStartedAt||timerBreak;$("timerBook").disabled=!!timerStartedAt||timerBreak;$("timerHint").textContent=timerBreak?"یک ساعت مطالعه کامل شد. بعد از استراحت، ادامه بده.":timerStartedAt?"زمان‌سنج در حال اجراست؛ برای ثبت زمان کمتر از یک ساعت، توقف موقت را بزن.":seconds>0?"زمان ثبت‌نشده آماده ذخیره است.":"برای شروع، یک کتاب انتخاب کن.";updateDailyStudy();renderWeeklyTimeChart()}
+function updateDailyStudy(){let total=(state.timeLogs||[]).filter(x=>x.date===today()).reduce((sum,x)=>sum+Number(x.seconds||0),0);if(timerStartedAt&&$("timerBook")?.value)total+=timerCurrentElapsed();let h=Math.floor(total/3600),m=Math.floor((total%3600)/60);let label=h?`${fa(h)} ساعت${m?` و ${fa(m)} دقیقه`:""}`:`${fa(m)} دقیقه`;$ ("statStudyTime").textContent=label}
+function completeTimerHour(){clearInterval(timerInterval);timerInterval=null;timerElapsed=3600;timerStartedAt=null;timerBreak=true;let bookId=$("timerBook").value;if(bookId){state.timeLogs=state.timeLogs||[];state.timeLogs.push({id:id(),bookId,date:today(),seconds:3600,createdAt:Date.now()});save()}updateTimerUI();renderWeeklyReport();toast("یک ساعت مطالعه کامل شد؛ وقت استراحته!")}
+$("timerStartPause").addEventListener("click",()=>{if(timerBreak){timerBreak=false;timerElapsed=0;timerStartedAt=Date.now();timerInterval=setInterval(()=>{if(timerCurrentElapsed()>=3600){completeTimerHour();return}updateTimerUI()},1000);updateTimerUI();return}if(timerStartedAt){timerElapsed=timerCurrentElapsed();timerStartedAt=null;clearInterval(timerInterval);timerInterval=null;updateTimerUI();return}if(!$("timerBook").value){toast("ابتدا کتاب مورد مطالعه را انتخاب کن.");return}if(timerElapsed>=3600)timerElapsed=0;timerStartedAt=Date.now();timerInterval=setInterval(()=>{if(timerCurrentElapsed()>=3600){completeTimerHour();return}updateTimerUI()},1000);updateTimerUI()});
+$("timerReset").addEventListener("click",()=>{clearInterval(timerInterval);timerInterval=null;timerStartedAt=null;timerElapsed=0;timerBreak=false;updateTimerUI()});
+$("timerSave").addEventListener("click",()=>{let seconds=timerCurrentElapsed(),bookId=$("timerBook").value;if(timerStartedAt||seconds<1||!bookId||timerBreak){toast("زمان‌سنج را متوقف کن و یک کتاب انتخاب کن.");return}state.timeLogs=state.timeLogs||[];state.timeLogs.push({id:id(),bookId,date:today(),seconds,createdAt:Date.now()});save();timerElapsed=0;updateTimerUI();updateDailyStudy();renderWeeklyReport();toast("زمان مطالعه ثبت شد.")});
 function renderStats(){let active=state.books.filter(b=>pct(b)<100).length;let avg=state.books.length?Math.round(state.books.reduce((sum,b)=>sum+pct(b),0)/state.books.length):0;let pages=state.sessions.reduce((sum,r)=>sum+Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))),0);$("statBooks").textContent=fa(active);$("statPages").textContent=fa(pages);$("statProgress").textContent=fa(avg)+'٪';$("todayLabel").textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'long',day:'numeric'}).format(new Date())}
 function renderBookOptions(){let options=state.books.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join("");$("sessionBook").innerHTML='<option value="">انتخاب کتاب</option>'+options}
 function renderBooks(){$("booksList").innerHTML=state.books.length?state.books.map(bookCard).join(""):empty("هنوز کتابی اضافه نکرده‌ای","از فرم بالا اولین کتابت را ثبت کن.");$("dashBooks").innerHTML=state.books.length?state.books.slice().sort((a,b)=>pct(b)-pct(a)).slice(0,5).map(bookCard).join(""):empty("لیست کتاب‌ها خالی است","با افزودن اولین کتاب، این بخش تکمیل می‌شود.")}
 function renderSessions(){let arr=state.sessions.slice().sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));$('sessionCount').textContent=fa(arr.length)+' مورد';$('sessionsList').innerHTML=arr.length?arr.map(r=>{let b=state.books.find(x=>x.id===r.bookId),pages=Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)));return `<article class="item"><div class="itemtop"><div><h4>${esc(b?.title||'کتاب حذف‌شده')}</h4><div class="sub">${datefmt(r.date)} · ${fa(pages)} صفحه</div></div><span class="badge">${fa(pages)} صفحه</span></div><div class="actions"><button class="mini red" data-del-session="${r.id}">حذف سابقه</button></div></article>`}).join(''):empty('هنوز سابقه‌ای ثبت نشده','بعد از مطالعه، تعداد صفحه‌ها را ثبت کن.');renderWeeklyReport()}
 function planCard(p){let b=state.books.find(x=>x.id===p.bookId);return `<article class="item"><div class="itemtop"><div><h4>${esc(p.title)}</h4><div class="sub">${datefmt(p.date)}${b?' · '+esc(b.title):''}${p.pages?` · هدف ${fa(p.pages)} صفحه`:''}</div></div><span class="badge ${p.status==='done'?'done':'todo'}">${p.status==='done'?'انجام‌شده':'انجام‌نشده'}</span></div><div class="actions"><button class="mini" data-toggle-plan="${p.id}">${p.status==='done'?'بازگردانی وضعیت':'علامت انجام‌شده'}</button><button class="mini" data-edit-plan="${p.id}">ویرایش</button><button class="mini red" data-del-plan="${p.id}">حذف</button></div></article>`}
-function renderWeeklyReport(){let targets=[$('weeklyReport'),$('weeklyReportSessions')].filter(Boolean);let rows=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;let day=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'short',day:'numeric'}).format(d);let records=state.sessions.filter(r=>r.date===iso).map(r=>({r,b:state.books.find(x=>x.id===r.bookId),pages:Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)))})).filter(x=>x.pages>0);let total=records.reduce((sum,x)=>sum+x.pages,0);let booksHtml=records.length?`<div class="daily-books">${records.map(x=>`<div class="daily-book"><span class="daily-book-name">${esc(x.b?.title||'کتاب حذف‌شده')}</span><span class="daily-book-count">${fa(x.pages)} صفحه</span></div>`).join('')}</div>`:`<div class="daily-empty">مطالعه‌ای ثبت نشده</div>`;rows.push(`<article class="item"><div class="itemtop"><div><h4>${day}</h4><div class="sub">${fa(records.length)} کتاب مطالعه‌شده</div></div><span class="badge">مجموع ${fa(total)} صفحه</span></div>${booksHtml}</article>`)}let html=rows.join('');targets.forEach(el=>el.innerHTML=html)}
+function formatStudyTime(seconds){let m=Math.floor(Math.max(0,Number(seconds)||0)/60),h=Math.floor(m/60),r=m%60;return h?`${fa(h)} ساعت${r?` و ${fa(r)} دقیقه`:''}`:`${fa(r)} دقیقه`}
+function dayIso(offset){let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-offset);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function getDaySummary(iso){let map=new Map();state.sessions.filter(r=>r.date===iso).forEach(r=>{let item=map.get(r.bookId)||{bookId:r.bookId,pages:0,seconds:0};item.pages+=Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)));map.set(r.bookId,item)});(state.timeLogs||[]).filter(r=>r.date===iso).forEach(r=>{let item=map.get(r.bookId)||{bookId:r.bookId,pages:0,seconds:0};item.seconds+=Number(r.seconds||0);map.set(r.bookId,item)});return [...map.values()].map(x=>({...x,title:state.books.find(b=>b.id===x.bookId)?.title||'کتاب حذف‌شده'}))}
+function renderWeeklyReport(){let targets=[$('weeklyReport'),$('weeklyReportSessions')].filter(Boolean);let rows=[];for(let i=0;i<=6;i++){let iso=dayIso(i),d=new Date(iso+'T12:00:00'),day=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'short',day:'numeric'}).format(d),books=getDaySummary(iso),totalPages=books.reduce((sum,x)=>sum+x.pages,0),totalSeconds=books.reduce((sum,x)=>sum+x.seconds,0);let booksHtml=books.length?`<div class="daily-books">${books.map(x=>`<div class="daily-book"><span class="daily-book-name">${esc(x.title)}</span><span class="daily-book-count">${x.pages?`${fa(x.pages)} صفحه`:''}${x.pages&&x.seconds?' · ':''}${x.seconds?formatStudyTime(x.seconds):''}</span></div>`).join('')}</div>`:`<div class="daily-empty">مطالعه‌ای ثبت نشده</div>`;rows.push(`<article class="item"><div class="itemtop"><div><h4>${day}</h4><div class="sub">${fa(books.length)} کتاب مطالعه‌شده</div></div><div style="text-align:left"><span class="badge">مجموع ${fa(totalPages)} صفحه</span><div class="sub" style="margin-top:5px">زمان کل: ${formatStudyTime(totalSeconds)}</div></div></div>${booksHtml}</article>`)}let html=rows.join('');targets.forEach(el=>el.innerHTML=html);renderWeeklyTimeChart()}
+function renderWeeklyTimeChart(){let el=$('weeklyTimeChart');if(!el)return;let days=Array.from({length:7},(_,i)=>{let iso=dayIso(i),d=new Date(iso+'T12:00:00'),seconds=getDaySummary(iso).reduce((sum,x)=>sum+x.seconds,0);return{iso,seconds,label:new Intl.DateTimeFormat('fa-IR',{weekday:'short'}).format(d),date:new Intl.DateTimeFormat('fa-IR',{month:'numeric',day:'numeric'}).format(d)}});let current=timerStartedAt&&$('timerBook')?.value?timerCurrentElapsed():0;if(current&&days[0]?.iso===today())days[0].seconds+=current;let max=Math.max(3600,...days.map(x=>x.seconds));el.innerHTML=days.map(d=>{let h=Math.max(d.seconds?5:3,Math.round(d.seconds/max*100));return `<button type="button" class="weekly-time-day" data-study-day="${d.iso}" aria-label="جزئیات مطالعه ${d.date}"><span class="weekly-time-label">${d.label}<br>${d.date}</span><span class="weekly-time-bar-area"><span class="weekly-time-bar" style="height:${h}%;opacity:${d.seconds?1:.35}"></span></span><span class="weekly-time-value">${formatStudyTime(d.seconds)}</span></button>`}).join('')}
+function openStudyDay(iso){let d=new Date(iso+'T12:00:00'),title=new Intl.DateTimeFormat('fa-IR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(d),books=getDaySummary(iso),totalPages=books.reduce((sum,x)=>sum+x.pages,0),totalSeconds=books.reduce((sum,x)=>sum+x.seconds,0);$('studyDayTitle').textContent=title;$('studyDayDetails').innerHTML=`<div class="study-detail-row"><strong>مجموع صفحات</strong><strong>${fa(totalPages)} صفحه</strong></div><div class="study-detail-row"><strong>مجموع زمان مطالعه</strong><strong>${formatStudyTime(totalSeconds)}</strong></div>${books.length?`<h4 style="margin:16px 0 8px">جزئیات هر کتاب</h4>`+books.map(x=>`<div class="study-detail-row"><strong>${esc(x.title)}</strong><span>${fa(x.pages)} صفحه · ${formatStudyTime(x.seconds)}</span></div>`).join(''):`<p class="muted" style="text-align:center;padding:15px 0">برای این روز مطالعه‌ای ثبت نشده.</p>`}`;$('studyDayModal').classList.add('open')}
+$('studyDayClose').addEventListener('click',()=>$('studyDayModal').classList.remove('open'));$('studyDayModal').addEventListener('click',e=>{if(e.target===$('studyDayModal'))$('studyDayModal').classList.remove('open')});$('weeklyTimeChart').addEventListener('click',e=>{let btn=e.target.closest('[data-study-day]');if(btn)openStudyDay(btn.dataset.studyDay)});
 function drawCanvas(c){let r=c.getBoundingClientRect(),ratio=window.devicePixelRatio||1;c.width=Math.max(280,Math.floor(r.width*ratio));c.height=220*ratio;let x=c.getContext('2d');x.scale(ratio,ratio);return{x,w:c.width/ratio,h:220}}
 function drawCharts(){renderWeeklyReport()}
 function tab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.toggle("hidden",p.id!=="panel-"+name));if(name==="dashboard")drawCharts()}
@@ -217,11 +278,11 @@ if(el=e.target.closest("[data-del-book]")){let b=state.books.find(x=>x.id===el.d
 if(el=e.target.closest("[data-del-session]")){if(confirm("این جلسه حذف شود؟")){state.sessions=state.sessions.filter(s=>s.id!==el.dataset.delSession);save();refresh();toast("جلسه حذف شد.")}return}
 });
 $("exportBtn").onclick=()=>{let blob=new Blob([JSON.stringify({...state,app:"StudyTrack",version:1,exportedAt:new Date().toISOString()},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="studytrack-backup-"+today()+".json";a.click();URL.revokeObjectURL(url);toast("فایل پشتیبان دانلود شد.")};
-$("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.books)||!Array.isArray(d.sessions))throw Error("ساختار فایل معتبر نیست");if(confirm("اطلاعات فعلی با این فایل جایگزین شود؟")){state={books:d.books,sessions:(d.sessions||[]).map(r=>({...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))})),plans:[]};save();refresh();toast("پشتیبان بازیابی شد.")}}catch(err){alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
-$("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه پاک شوند؟")){state={books:[],sessions:[],plans:[]};save();refresh();toast("همه اطلاعات پاک شد.")}};
+$("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.books)||!Array.isArray(d.sessions))throw Error("ساختار فایل معتبر نیست");if(confirm("اطلاعات فعلی با این فایل جایگزین شود؟")){state={books:d.books,sessions:(d.sessions||[]).map(r=>({...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))})),plans:[],timeLogs:Array.isArray(d.timeLogs)?d.timeLogs:[]};save();refresh();toast("پشتیبان بازیابی شد.")}}catch(err){alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
+$("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه پاک شوند؟")){state={books:[],sessions:[],plans:[],timeLogs:[]};save();refresh();toast("همه اطلاعات پاک شد.")}};
 window.addEventListener("resize",()=>{if(!$("panel-dashboard").classList.contains("hidden"))drawCharts()});
 $("sessionDate").value=today();load();
-refresh();
+refresh();updateTimerUI();
 initializeCloudSync();
 })();
 </script>
