@@ -105,7 +105,7 @@ const KEY="studytrack-final-v1";
 const SUPABASE_URL="https://lzhvduoogqbipskkvufh.supabase.co";
 const SUPABASE_KEY="sb_publishable_WmUnieJsO4BbRi0CT5urFw_Fqv2boag";
 let cloudReady=false;
-let cloudSyncBusy=false;
+let cloudSyncQueue=Promise.resolve();
 const $=id=>document.getElementById(id);
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 const id=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
@@ -135,10 +135,18 @@ function mergeStates(local,remote){
  return {books:[...books.values()],sessions:[...sessions.values()],plans:[]};
 }
 async function syncToCloud(){
- if(!cloudReady||cloudSyncBusy)return; cloudSyncBusy=true;
- try{await cloudRequest("study_data?on_conflict=id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({id:1,data:state,updated_at:new Date().toISOString()})})}
+ if(!cloudReady) return;
+ // Queue writes so a fast sequence of changes cannot cause a deletion to be skipped.
+ cloudSyncQueue=cloudSyncQueue.catch(()=>{}).then(async()=>{
+  const snapshot=JSON.stringify(state);
+  await cloudRequest("study_data?on_conflict=id",{
+   method:"POST",
+   headers:{Prefer:"resolution=merge-duplicates,return=minimal"},
+   body:JSON.stringify({id:1,data:JSON.parse(snapshot),updated_at:new Date().toISOString()})
+  });
+ });
+ try{await cloudSyncQueue}
  catch(err){console.warn("Study Track cloud sync failed:",err);toast("ذخیره محلی انجام شد؛ همگام‌سازی ابری ناموفق بود. اتصال را بررسی کن.")}
- finally{cloudSyncBusy=false}
 }
 async function initializeCloudSync(){
  try{
@@ -146,8 +154,11 @@ async function initializeCloudSync(){
   const local={books:state.books||[],sessions:state.sessions||[],plans:state.plans||[]};
   const remote=rows&&rows[0]&&rows[0].data;
   if(hasData(remote)){
-   state=mergeStates(local,remote); try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
-   cloudReady=true; refresh(); await syncToCloud(); toast("اطلاعات با فضای ابری همگام شد.");
+   // The cloud is authoritative once it contains data. Do not union stale local items,
+   // because items deleted on another device would otherwise reappear.
+   state={books:Array.isArray(remote.books)?remote.books:[],sessions:Array.isArray(remote.sessions)?remote.sessions:[],plans:Array.isArray(remote.plans)?remote.plans:[]};
+   try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+   cloudReady=true; refresh(); toast("اطلاعات با فضای ابری همگام شد.");
   }else if(hasData(local)){
    cloudReady=true; await syncToCloud(); toast("اطلاعات این دستگاه به فضای ابری منتقل شد.");
   }else{cloudReady=true;toast("اتصال ابری آماده است.")}
