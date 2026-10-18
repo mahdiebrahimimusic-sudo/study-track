@@ -76,11 +76,29 @@ canvas{max-width:100%}
 .weekly-time-label{font-size:10px;text-align:center;line-height:1.5;overflow-wrap:anywhere}.weekly-time-value{font-size:10px;color:#c4b5fd;font-weight:700;direction:rtl;text-align:center}
 .study-modal{position:fixed;inset:0;background:#000b;z-index:50;display:none;align-items:center;justify-content:center;padding:16px}.study-modal.open{display:flex}.study-modal-card{width:min(520px,100%);max-height:85vh;overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 60px #0008}.study-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.study-modal-head h3{margin:0;font-size:17px}.study-modal-close{border:1px solid var(--line);background:#151e2c;color:var(--ink);border-radius:8px;padding:4px 10px}.study-detail-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}.study-detail-row span:first-child{overflow-wrap:anywhere}.study-motivation{margin:15px 0 0;color:#aebbd0;font-size:11px;text-align:center}
 @media(max-width:700px){.study-timer-box{padding:12px}.timer-actions{gap:6px}.weekly-time-box{padding:12px}.weekly-time-chart{gap:4px}.weekly-time-day{padding:7px 2px}.weekly-time-label{font-size:9px}.weekly-time-value{font-size:9px}.study-modal-card{padding:15px}}
+
+.auth-screen{position:fixed;inset:0;z-index:1000;background:#080b12;display:flex;align-items:center;justify-content:center;padding:18px;direction:rtl}
+.auth-card{width:min(420px,100%);background:#111722;border:1px solid #263143;border-radius:20px;padding:24px;box-shadow:0 20px 70px #0008}
+.auth-card h2{margin:0 0 5px;font-size:23px;color:#f4f7fb}.auth-card p{color:#9aa7ba;font-size:13px;margin:0 0 18px}.auth-card label{display:block;font-size:12px;color:#dbe8f8;margin:12px 0 5px}.auth-card input{width:100%;border:1px solid #2b3749;border-radius:10px;padding:11px;background:#0b1019;color:#f4f7fb}.auth-actions{display:flex;gap:8px;margin-top:16px}.auth-actions button{flex:1}.auth-message{min-height:24px;font-size:12px;color:#9ccaff;margin-top:12px}.account-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 16px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+
 </style>
 </head>
 <body>
 <header class="topbar"><div class="logo">ST</div><div><h1>Study Track</h1></div></header>
+<section class="auth-screen" id="authScreen">
+ <form class="auth-card" id="authForm">
+  <div style="font-size:30px;margin-bottom:5px">📚</div>
+  <h2>ورود به Study Track</h2>
+  <p>حساب بساز یا وارد شو تا اطلاعات مطالعه‌ات روی دستگاه‌های مختلف همگام شود.</p>
+  <label for="authEmail">ایمیل</label><input id="authEmail" type="email" autocomplete="email" required placeholder="name@example.com" dir="ltr">
+  <label for="authPassword">رمز عبور (حداقل ۶ کاراکتر)</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="••••••••" dir="ltr">
+  <div class="auth-actions"><button class="btn primary" id="signInBtn" type="button">ورود</button><button class="btn outline" id="signUpBtn" type="button">ساخت حساب</button></div>
+  <div class="auth-message" id="authMessage" role="status"></div>
+ </form>
+</section>
+
 <main class="wrap">
+ <div class="account-bar hidden" id="accountBar"><span id="accountEmail" class="muted"></span><button class="btn outline" id="signOutBtn" type="button">خروج از حساب</button></div>
 <section class="welcome"><div><div class="eyebrow">داشبورد مطالعه</div><h2>Study Track</h2><p class="muted">کتاب‌ها و جلسه‌هایت را ثبت کن و روندت را ببین.</p></div><div class="pill" id="todayLabel">امروز</div></section>
 <section class="stats">
  <article class="stat"><span class="ico">📚</span><small>کتاب‌های فعال</small><strong id="statBooks">۰</strong></article>
@@ -142,6 +160,7 @@ canvas{max-width:100%}
 <footer><span>StudyTrack · نسخه تک‌فایلی</span><span>ذخیره محلی + همگام‌سازی ابری 🌿</span></footer>
 <div id="studyDayModal" class="study-modal" role="dialog" aria-modal="true" aria-labelledby="studyDayTitle"><div class="study-modal-card"><div class="study-modal-head"><h3 id="studyDayTitle">جزئیات مطالعه</h3><button type="button" class="study-modal-close" id="studyDayClose">بستن ✕</button></div><div id="studyDayDetails"></div><p class="study-motivation">هر صفحه‌ای که امروز می‌خوانی، تو را یک قدم به هدفت نزدیک‌تر می‌کند 🌱</p></div></div>
 <div id="toast" class="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (()=>{"use strict";
 const KEY="studytrack-final-v1";
@@ -150,6 +169,11 @@ const SUPABASE_URL="https://lzhvduoogqbipskkvufh.supabase.co";
 const SUPABASE_KEY="sb_publishable_WmUnieJsO4BbRi0CT5urFw_Fqv2boag";
 let cloudReady=false;
 let cloudSyncQueue=Promise.resolve();
+let supabaseClient=null;
+let currentUser=null;
+let activeStorageKey=null;
+const LEGACY_KEY=KEY;
+const LEGACY_MIGRATED_KEY="studytrack-legacy-migrated-v1";
 const $=id=>document.getElementById(id);
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 const id=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
@@ -158,86 +182,18 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const datefmt=s=>s?new Intl.DateTimeFormat("fa-IR",{year:"numeric",month:"short",day:"numeric"}).format(new Date(s+"T12:00:00")):"بدون تاریخ";
 let state={books:[],sessions:[],plans:[],timeLogs:[]};
 let timerElapsed=0,timerStartedAt=null,timerInterval=null,timerBreak=false;
-function load(){try{let raw=localStorage.getItem(KEY);if(raw){state={...state,...JSON.parse(raw)};state.sessions=(state.sessions||[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q});state.plans=(state.plans||[]).map(p=>{let q={...p};delete q.minutes;return q});state.timeLogs=Array.isArray(state.timeLogs)?state.timeLogs:[]}}catch(e){alert("خواندن اطلاعات ذخیره‌شده ممکن نشد؛ شاید مرورگر حالت خصوصی دارد.")}}
-function save(){
- try{localStorage.setItem(KEY,JSON.stringify(state))}
- catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}
- if(cloudReady) syncToCloud();
-}
-async function cloudRequest(path, options={}){
- const response=await fetch(SUPABASE_URL+"/rest/v1/"+path,{
-  ...options,
-  headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json",...(options.headers||{})}
- });
- if(!response.ok) throw new Error("Supabase HTTP "+response.status);
- const text=await response.text(); return text?JSON.parse(text):null;
-}
-function hasData(d){return !!(d&&((Array.isArray(d.books)&&d.books.length)||(Array.isArray(d.sessions)&&d.sessions.length)))}
-function mergeStates(local,remote){
- const books=new Map(); (remote.books||[]).forEach(b=>books.set(b.id,b));
- (local.books||[]).forEach(b=>{const old=books.get(b.id);books.set(b.id,old?{...old,...b,current:Math.max(Number(old.current)||0,Number(b.current)||0)}:b)});
- const sessions=new Map(); (remote.sessions||[]).forEach(r=>sessions.set(r.id,r)); (local.sessions||[]).forEach(r=>sessions.set(r.id,r));
- return {books:[...books.values()],sessions:[...sessions.values()],plans:[]};
-}
-async function syncToCloud(){
- if(!cloudReady) return;
- // Queue writes so a fast sequence of changes cannot cause a deletion to be skipped.
- cloudSyncQueue=cloudSyncQueue.catch(()=>{}).then(async()=>{
-  const snapshot=JSON.stringify(state);
-  await cloudRequest("study_data?on_conflict=id",{
-   method:"POST",
-   headers:{Prefer:"resolution=merge-duplicates,return=minimal"},
-   body:JSON.stringify({id:1,data:JSON.parse(snapshot),updated_at:new Date().toISOString()})
-  });
- });
- try{await cloudSyncQueue}
- catch(err){console.warn("Study Track cloud sync failed:",err);toast("ذخیره محلی انجام شد؛ همگام‌سازی ابری ناموفق بود. اتصال را بررسی کن.")}
-}
-
-async function initializeCloudSync(){
- try{
-  const rows = await cloudRequest("study_data?id=eq.1&select=data");
-
-  // اگر رکورد ابری وجود دارد، حتی اگر اطلاعاتش خالی باشد،
-  // همان را مرجع اصلی قرار بده.
-  if(Array.isArray(rows) && rows.length > 0){
-   const remote = rows[0].data || {};
-
-   state = {
-    books: Array.isArray(remote.books) ? remote.books : [],
-    sessions: Array.isArray(remote.sessions) ? remote.sessions : [],
-    plans: Array.isArray(remote.plans) ? remote.plans : [],
-     timeLogs: Array.isArray(remote.timeLogs) ? remote.timeLogs : []
-   };
-
-   try{
-    localStorage.setItem(KEY, JSON.stringify(state));
-   }catch(e){}
-
-   cloudReady = true;
-   refresh();
-   toast("اطلاعات با فضای ابری همگام شد.");
-   return;
-  }
-
-  // فقط وقتی رکوردی در فضای ابری وجود ندارد،
-  // اطلاعات فعلی این دستگاه را به فضای ابری منتقل کن.
-  cloudReady = true;
-
-  if(hasData(state)){
-   await syncToCloud();
-   toast("اطلاعات این دستگاه به فضای ابری منتقل شد.");
-  }else{
-   await syncToCloud();
-   toast("اتصال ابری آماده است.");
-  }
-
- }catch(err){
-  cloudReady = false;
-  console.warn("Study Track cloud setup failed:", err);
-  toast("اتصال ابری برقرار نشد. تنظیمات Supabase را بررسی کن.");
- }
-}
+function normalizeState(d){return {books:Array.isArray(d?.books)?d.books:[],sessions:(Array.isArray(d?.sessions)?d.sessions:[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q}),plans:(Array.isArray(d?.plans)?d.plans:[]).map(p=>{let q={...p};delete q.minutes;return q}),timeLogs:Array.isArray(d?.timeLogs)?d.timeLogs:[]}}
+function load(){try{let raw=activeStorageKey&&localStorage.getItem(activeStorageKey);if(raw)state=normalizeState(JSON.parse(raw));else state={books:[],sessions:[],plans:[],timeLogs:[]}}catch(e){state={books:[],sessions:[],plans:[],timeLogs:[]};console.warn("Local data could not be loaded",e)}}
+function save(){try{if(activeStorageKey)localStorage.setItem(activeStorageKey,JSON.stringify(state))}catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}if(cloudReady&&currentUser)syncToCloud()}
+async function cloudRequest(path,options={}){if(!supabaseClient)throw new Error("Supabase auth is not initialized");const {data:{session}}=await supabaseClient.auth.getSession();if(!session)throw new Error("Not signed in");const response=await fetch(SUPABASE_URL+"/rest/v1/"+path,{...options,headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+session.access_token,"Content-Type":"application/json",...(options.headers||{})}});if(!response.ok)throw new Error("Supabase HTTP "+response.status+": "+(await response.text()));const text=await response.text();return text?JSON.parse(text):null}
+function hasData(d){return !!(d&&((Array.isArray(d.books)&&d.books.length)||(Array.isArray(d.sessions)&&d.sessions.length)||(Array.isArray(d.timeLogs)&&d.timeLogs.length)))}
+async function syncToCloud(){if(!cloudReady||!currentUser)return;cloudSyncQueue=cloudSyncQueue.catch(()=>{}).then(async()=>{const snapshot=JSON.stringify(state);await cloudRequest("user_study_data?on_conflict=user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({user_id:currentUser.id,data:JSON.parse(snapshot),updated_at:new Date().toISOString()})})});try{await cloudSyncQueue}catch(err){console.warn("Study Track cloud sync failed:",err);toast("ذخیره محلی انجام شد؛ همگام‌سازی ابری ناموفق بود. اتصال یا تنظیمات دسترسی را بررسی کن.")}}
+async function initializeUserData(user){currentUser=user;activeStorageKey=KEY+"-user-"+user.id;cloudReady=false;const oldRaw=localStorage.getItem(LEGACY_KEY);let legacyState=null;if(!localStorage.getItem(LEGACY_MIGRATED_KEY)&&oldRaw){try{legacyState=normalizeState(JSON.parse(oldRaw))}catch(e){}}
+load();try{const rows=await cloudRequest("user_study_data?user_id=eq."+encodeURIComponent(user.id)+"&select=data");if(Array.isArray(rows)&&rows.length){state=normalizeState(rows[0].data||{});localStorage.setItem(activeStorageKey,JSON.stringify(state))}else if(legacyState&&hasData(legacyState)){state=legacyState;localStorage.setItem(activeStorageKey,JSON.stringify(state));localStorage.setItem(LEGACY_MIGRATED_KEY,"yes");cloudReady=true;await syncToCloud();toast("اطلاعات این دستگاه به حساب جدیدت منتقل شد.")}else{state={books:[],sessions:[],plans:[],timeLogs:[]};localStorage.setItem(activeStorageKey,JSON.stringify(state));cloudReady=true;await syncToCloud()}localStorage.setItem(LEGACY_MIGRATED_KEY,"yes");cloudReady=true;refresh();updateTimerUI()}catch(err){cloudReady=false;console.error("User cloud initialization failed",err);toast("دریافت اطلاعات ابری ناموفق بود؛ تنظیمات جدول و Policyها را بررسی کن.")}}
+function showAuth(message=""){ $("authScreen").classList.remove("hidden");$("accountBar").classList.add("hidden");$("authMessage").textContent=message }
+function showApp(user){$("authScreen").classList.add("hidden");$("accountBar").classList.remove("hidden");$("accountEmail").textContent="واردشده: "+(user.email||"");}
+async function handleAuth(mode){const email=$("authEmail").value.trim(),password=$("authPassword").value;$("authMessage").textContent="در حال اتصال...";$("signInBtn").disabled=$("signUpBtn").disabled=true;try{let result;if(mode==="signup")result=await supabaseClient.auth.signUp({email,password});else result=await supabaseClient.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(mode==="signup"&&!result.data.session){$("authMessage").textContent="حساب ساخته شد. ایمیلت را برای تأیید بررسی کن؛ سپس وارد شو.";return}if(result.data.user){showApp(result.data.user);await initializeUserData(result.data.user);$("authMessage").textContent=""}}catch(err){console.error(err);$("authMessage").textContent=err.message||"ورود یا ثبت‌نام ناموفق بود."}finally{$("signInBtn").disabled=$("signUpBtn").disabled=false}}
+async function initializeAuth(){if(!window.supabase?.createClient){showAuth("کتابخانه ورود بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را تازه‌سازی کن.");return}supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);$("signInBtn").addEventListener("click",()=>handleAuth("signin"));$("signUpBtn").addEventListener("click",()=>handleAuth("signup"));$("signOutBtn").addEventListener("click",async()=>{cloudReady=false;await supabaseClient.auth.signOut();currentUser=null;activeStorageKey=null;state={books:[],sessions:[],plans:[],timeLogs:[]};showAuth("از حساب خارج شدی.")});const {data:{session},error}=await supabaseClient.auth.getSession();if(error||!session?.user){showAuth();return}showApp(session.user);await initializeUserData(session.user);supabaseClient.auth.onAuthStateChange((event,sessionNow)=>{if(event==="SIGNED_OUT"){cloudReady=false;currentUser=null;activeStorageKey=null;state={books:[],sessions:[],plans:[],timeLogs:[]};showAuth()}})}
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2300)}
 function pct(b){return b.total?Math.min(100,Math.round((Number(b.current)||0)/Number(b.total)*100)):0}
 function empty(title,desc){return `<div class="empty"><b>${esc(title)}</b>${esc(desc||"")}</div>`}
@@ -281,9 +237,9 @@ $("exportBtn").onclick=()=>{let blob=new Blob([JSON.stringify({...state,app:"Stu
 $("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.books)||!Array.isArray(d.sessions))throw Error("ساختار فایل معتبر نیست");if(confirm("اطلاعات فعلی با این فایل جایگزین شود؟")){state={books:d.books,sessions:(d.sessions||[]).map(r=>({...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))})),plans:[],timeLogs:Array.isArray(d.timeLogs)?d.timeLogs:[]};save();refresh();toast("پشتیبان بازیابی شد.")}}catch(err){alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
 $("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه پاک شوند؟")){state={books:[],sessions:[],plans:[],timeLogs:[]};save();refresh();toast("همه اطلاعات پاک شد.")}};
 window.addEventListener("resize",()=>{if(!$("panel-dashboard").classList.contains("hidden"))drawCharts()});
-$("sessionDate").value=today();load();
+$("sessionDate").value=today();
 refresh();updateTimerUI();
-initializeCloudSync();
+initializeAuth();
 })();
 </script>
 
