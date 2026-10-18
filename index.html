@@ -90,17 +90,22 @@ canvas{max-width:100%}
  <div class="heading" style="margin-top:22px"><div><h3>آمار روزهای هفته</h3><p class="muted">تعداد صفحات مطالعه‌شده از هر کتاب به تفکیک روز</p></div></div><div id="weeklyReportSessions" class="items"></div>
 </section>
 <section class="panel hidden" id="panel-backup">
- <div class="heading"><div><h3>پشتیبان‌گیری و انتقال</h3><p class="muted">اطلاعات در همین مرورگر ذخیره می‌شود؛ برای انتقال از فایل پشتیبان استفاده کن.</p></div></div>
+ <div class="heading"><div><h3>پشتیبان‌گیری و انتقال</h3><p class="muted">اطلاعات در مرورگر ذخیره می‌شود و در صورت اتصال، با فضای ابری همگام می‌شود؛ فایل پشتیبان هم نگه دار.</p></div></div>
  <div class="backupgrid"><article class="backupcard"><div style="font-size:25px">⬇️</div><h4>گرفتن نسخه پشتیبان</h4><p>یک فایل JSON از فهرست کتاب‌ها و سوابق صفحات مطالعه ذخیره کن.</p><button class="btn primary" id="exportBtn">دریافت فایل پشتیبان</button></article>
  <article class="backupcard"><div style="font-size:25px">⬆️</div><h4>بازیابی نسخه پشتیبان</h4><p>با انتخاب فایل پشتیبان، اطلاعات فعلی با آن جایگزین می‌شود.</p><label class="btn outline filelabel">انتخاب فایل<input id="importFile" type="file" accept=".json,application/json"></label></article></div>
  <div class="dangerzone"><h4>پاک کردن همه اطلاعات</h4><p class="muted">این کار برگشت‌پذیر نیست. قبلش پشتیبان بگیر.</p><button class="btn danger" id="clearBtn">حذف همه اطلاعات</button></div>
- <p class="hint">این نسخه اطلاعات را به سرور ارسال نمی‌کند. پاک‌کردن داده‌های مرورگر ممکن است اطلاعات را حذف کند.</p>
+ <p class="hint">اطلاعات در مرورگر ذخیره می‌شود و در صورت اتصال به اینترنت با فضای ابری همگام می‌شود. فایل پشتیبان را هم نگه دار.</p>
 </section>
 </main>
-<footer><span>StudyTrack · نسخه تک‌فایلی</span><span>اطلاعات فقط در همین مرورگر ذخیره می‌شود 🌿</span></footer><div id="toast" class="toast" role="status"></div>
+<footer><span>StudyTrack · نسخه تک‌فایلی</span><span>ذخیره محلی + همگام‌سازی ابری 🌿</span></footer><div id="toast" class="toast" role="status"></div>
 <script>
 (()=>{"use strict";
 const KEY="studytrack-final-v1";
+// Supabase cloud sync. Only a public publishable key belongs in browser code.
+const SUPABASE_URL="https://lzhvduoogqbipskkvufh.supabase.co";
+const SUPABASE_KEY="sb_publishable_WmUnieJsO4BbRi0CT5urFw_Fqv2boag";
+let cloudReady=false;
+let cloudSyncBusy=false;
 const $=id=>document.getElementById(id);
 const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 const id=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
@@ -109,7 +114,45 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const datefmt=s=>s?new Intl.DateTimeFormat("fa-IR",{year:"numeric",month:"short",day:"numeric"}).format(new Date(s+"T12:00:00")):"بدون تاریخ";
 let state={books:[],sessions:[],plans:[]};
 function load(){try{let raw=localStorage.getItem(KEY);if(raw){state={...state,...JSON.parse(raw)};state.sessions=(state.sessions||[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q});state.plans=(state.plans||[]).map(p=>{let q={...p};delete q.minutes;return q})}}catch(e){alert("خواندن اطلاعات ذخیره‌شده ممکن نشد؛ شاید مرورگر حالت خصوصی دارد.")}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(state))}
+ catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}
+ if(cloudReady) syncToCloud();
+}
+async function cloudRequest(path, options={}){
+ const response=await fetch(SUPABASE_URL+"/rest/v1/"+path,{
+  ...options,
+  headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json",...(options.headers||{})}
+ });
+ if(!response.ok) throw new Error("Supabase HTTP "+response.status);
+ const text=await response.text(); return text?JSON.parse(text):null;
+}
+function hasData(d){return !!(d&&((Array.isArray(d.books)&&d.books.length)||(Array.isArray(d.sessions)&&d.sessions.length)))}
+function mergeStates(local,remote){
+ const books=new Map(); (remote.books||[]).forEach(b=>books.set(b.id,b));
+ (local.books||[]).forEach(b=>{const old=books.get(b.id);books.set(b.id,old?{...old,...b,current:Math.max(Number(old.current)||0,Number(b.current)||0)}:b)});
+ const sessions=new Map(); (remote.sessions||[]).forEach(r=>sessions.set(r.id,r)); (local.sessions||[]).forEach(r=>sessions.set(r.id,r));
+ return {books:[...books.values()],sessions:[...sessions.values()],plans:[]};
+}
+async function syncToCloud(){
+ if(!cloudReady||cloudSyncBusy)return; cloudSyncBusy=true;
+ try{await cloudRequest("study_data?on_conflict=id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({id:1,data:state,updated_at:new Date().toISOString()})})}
+ catch(err){console.warn("Study Track cloud sync failed:",err);toast("ذخیره محلی انجام شد؛ همگام‌سازی ابری ناموفق بود. اتصال را بررسی کن.")}
+ finally{cloudSyncBusy=false}
+}
+async function initializeCloudSync(){
+ try{
+  const rows=await cloudRequest("study_data?id=eq.1&select=data");
+  const local={books:state.books||[],sessions:state.sessions||[],plans:state.plans||[]};
+  const remote=rows&&rows[0]&&rows[0].data;
+  if(hasData(remote)){
+   state=mergeStates(local,remote); try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+   cloudReady=true; refresh(); await syncToCloud(); toast("اطلاعات با فضای ابری همگام شد.");
+  }else if(hasData(local)){
+   cloudReady=true; await syncToCloud(); toast("اطلاعات این دستگاه به فضای ابری منتقل شد.");
+  }else{cloudReady=true;toast("اتصال ابری آماده است.")}
+ }catch(err){cloudReady=false;console.warn("Study Track cloud setup failed:",err);toast("برنامه محلی کار می‌کند؛ اتصال ابری برقرار نشد. تنظیمات Supabase را بررسی کن.")}
+}
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2300)}
 function pct(b){return b.total?Math.min(100,Math.round((Number(b.current)||0)/Number(b.total)*100)):0}
 function empty(title,desc){return `<div class="empty"><b>${esc(title)}</b>${esc(desc||"")}</div>`}
@@ -140,6 +183,7 @@ $("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه
 window.addEventListener("resize",()=>{if(!$("panel-dashboard").classList.contains("hidden"))drawCharts()});
 $("sessionDate").value=today();load();
 refresh();
+initializeCloudSync();
 })();
 </script>
 
