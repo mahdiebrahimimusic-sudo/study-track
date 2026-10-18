@@ -148,21 +148,49 @@ async function syncToCloud(){
  try{await cloudSyncQueue}
  catch(err){console.warn("Study Track cloud sync failed:",err);toast("ذخیره محلی انجام شد؛ همگام‌سازی ابری ناموفق بود. اتصال را بررسی کن.")}
 }
+
 async function initializeCloudSync(){
  try{
-  const rows=await cloudRequest("study_data?id=eq.1&select=data");
-  const local={books:state.books||[],sessions:state.sessions||[],plans:state.plans||[]};
-  const remote=rows&&rows[0]&&rows[0].data;
-  if(hasData(remote)){
-   // The cloud is authoritative once it contains data. Do not union stale local items,
-   // because items deleted on another device would otherwise reappear.
-   state={books:Array.isArray(remote.books)?remote.books:[],sessions:Array.isArray(remote.sessions)?remote.sessions:[],plans:Array.isArray(remote.plans)?remote.plans:[]};
-   try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
-   cloudReady=true; refresh(); toast("اطلاعات با فضای ابری همگام شد.");
-  }else if(hasData(local)){
-   cloudReady=true; await syncToCloud(); toast("اطلاعات این دستگاه به فضای ابری منتقل شد.");
-  }else{cloudReady=true;toast("اتصال ابری آماده است.")}
- }catch(err){cloudReady=false;console.warn("Study Track cloud setup failed:",err);toast("برنامه محلی کار می‌کند؛ اتصال ابری برقرار نشد. تنظیمات Supabase را بررسی کن.")}
+  const rows = await cloudRequest("study_data?id=eq.1&select=data");
+
+  // اگر رکورد ابری وجود دارد، حتی اگر اطلاعاتش خالی باشد،
+  // همان را مرجع اصلی قرار بده.
+  if(Array.isArray(rows) && rows.length > 0){
+   const remote = rows[0].data || {};
+
+   state = {
+    books: Array.isArray(remote.books) ? remote.books : [],
+    sessions: Array.isArray(remote.sessions) ? remote.sessions : [],
+    plans: Array.isArray(remote.plans) ? remote.plans : []
+   };
+
+   try{
+    localStorage.setItem(KEY, JSON.stringify(state));
+   }catch(e){}
+
+   cloudReady = true;
+   refresh();
+   toast("اطلاعات با فضای ابری همگام شد.");
+   return;
+  }
+
+  // فقط وقتی رکوردی در فضای ابری وجود ندارد،
+  // اطلاعات فعلی این دستگاه را به فضای ابری منتقل کن.
+  cloudReady = true;
+
+  if(hasData(state)){
+   await syncToCloud();
+   toast("اطلاعات این دستگاه به فضای ابری منتقل شد.");
+  }else{
+   await syncToCloud();
+   toast("اتصال ابری آماده است.");
+  }
+
+ }catch(err){
+  cloudReady = false;
+  console.warn("Study Track cloud setup failed:", err);
+  toast("اتصال ابری برقرار نشد. تنظیمات Supabase را بررسی کن.");
+ }
 }
 function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2300)}
 function pct(b){return b.total?Math.min(100,Math.round((Number(b.current)||0)/Number(b.total)*100)):0}
