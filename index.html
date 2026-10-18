@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="application-name" content="Study Track">
+<meta name="apple-mobile-web-app-title" content="Study Track">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#080b12">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b12">
+<title>Study Track</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css">
+<style>
+
+:root{--bg:#080b12;--surface:#111722;--ink:#f4f7fb;--muted:#9aa7ba;--line:#263143;--green:#111722;--green2:#4b9cff;--pale:#15243a;--orange:#4b9cff;--red:#ff626e;--shadow:0 8px 28px #00000040}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazir,Tahoma,"Arial",sans-serif;font-size:14px;line-height:1.8}button,input,select,textarea{font:inherit}button{cursor:pointer}.topbar{background:var(--green);color:#fff;padding:16px max(16px,calc((100% - 1100px)/2));display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:#ffffff20;display:grid;place-items:center;font-weight:bold;direction:ltr}.topbar h1{font-size:20px;line-height:1.4;margin:0}.topbar p{font-size:11px;margin:0;color:#d5e5dd}.wrap{width:min(1100px,calc(100% - 24px));margin:20px auto 38px}.welcome{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 20px}.welcome h2{font-size:clamp(21px,3vw,29px);margin:0 0 4px}.welcome p{margin:0}.eyebrow{color:var(--green2);font-weight:bold;font-size:11px}.muted{color:var(--muted);font-size:12px}.pill{background:var(--pale);color:var(--green);padding:7px 12px;border-radius:99px;font-size:12px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px}.stat{background:white;border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px}.stat .ico{font-size:20px}.stat small{color:var(--muted)}.stat strong{font-size:21px}.tabs{display:flex;gap:6px;overflow:auto;padding:4px 0 12px}.tab{border:1px solid var(--line);background:white;color:var(--muted);border-radius:11px;padding:9px 14px;white-space:nowrap;font-size:12px}.tab.active{background:var(--green);color:white;border-color:var(--green)}.panel{background:white;border:1px solid var(--line);border-radius:19px;padding:20px;box-shadow:var(--shadow)}.hidden{display:none!important}.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.heading h3{margin:0;font-size:17px}.heading p{margin:0}.btn{border:0;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:bold}.primary{background:var(--green);color:white}.outline{background:white;color:var(--green);border:1px solid #b7d1c4}.ghost{background:#f0f4f1;color:#44554d}.danger{background:#fff0f0;color:var(--red);border:1px solid #f0d0d0}.books,.items{display:grid;gap:10px}.book,.item{border:1px solid var(--line);border-radius:14px;padding:14px}.booktop,.itemtop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.book h4,.item h4{margin:0;font-size:14px}.sub{font-size:11px;color:var(--muted)}.pct{color:var(--green);font-size:15px;font-weight:bold;white-space:nowrap}.track{height:8px;background:#edf1ee;border-radius:99px;overflow:hidden;margin:10px 0 7px}.fill{height:100%;background:linear-gradient(90deg,#2e7a61,#83b89b);border-radius:99px}.meta{display:flex;gap:9px;justify-content:space-between;flex-wrap:wrap;font-size:11px;color:var(--muted)}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.mini{font-size:11px;border:1px solid var(--line);background:white;color:#52665c;padding:5px 8px;border-radius:8px}.mini.red{color:var(--red)}.charts{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:20px}.chart{border:1px solid var(--line);border-radius:15px;padding:14px;min-width:0}.chart h3{font-size:15px;margin:0}.chart canvas{width:100%;height:220px;display:block}.formbox{background:#f9fbfa;border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:22px}.formbox h4{margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:bold}.grid input,.grid select,.filter{width:100%;min-width:0;border:1px solid #dce5df;border-radius:9px;background:#fff;padding:10px;color:var(--ink);font-size:13px}.span2{grid-column:span 2}.formactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.hint{font-size:11px;color:var(--muted)}.badge{display:inline-block;border-radius:99px;padding:3px 8px;background:var(--pale);color:var(--green);font-size:10px;white-space:nowrap}.badge.done{background:#e7f5e9;color:#28713e}.badge.todo{background:#fff4df;color:#95631b}.backupgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.backupcard{border:1px solid var(--line);border-radius:14px;padding:16px}.backupcard h4{margin:5px 0}.backupcard p{font-size:12px;color:var(--muted)}.filelabel{position:relative;overflow:hidden;display:inline-flex}.filelabel input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}.dangerzone{border:1px solid #f0d7d7;background:#fffafa;border-radius:14px;padding:15px;margin-top:17px}.empty{text-align:center;padding:22px 10px;border:1px dashed #d8e2dc;border-radius:13px;color:var(--muted);font-size:12px}.empty b{display:block;color:var(--ink);font-size:13px}.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);background:#183b31;color:white;border-radius:12px;padding:10px 15px;font-size:12px;opacity:0;transition:.2s;pointer-events:none;z-index:20;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}footer{width:min(1100px,calc(100% - 24px));margin:0 auto 20px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:8px}
+@media(max-width:700px){.wrap{width:calc(100% - 18px);margin-top:12px}.topbar{padding:13px 14px}.welcome{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:12px}.stat strong{font-size:19px}.panel{padding:13px}.charts{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.span2{grid-column:span 1}.backupgrid{grid-template-columns:1fr}.heading{align-items:flex-start}.tab{padding:8px 11px}.book,.item{padding:11px}footer{flex-direction:column}}
+
+/* Dark mode: black, white and blue palette */
+body{background:var(--bg);color:var(--ink)}
+.topbar{display:none!important}
+.wrap{margin-top:20px}
+.welcome h2{color:#f7f9fc}
+.eyebrow{color:#69aaff}
+.muted,.stat small{color:var(--muted)}
+.pill{background:#14243a;color:#9ccaff;border:1px solid #263f60}
+.stat,.panel,.chart,.book,.item,.backupcard,.formbox{background:var(--surface)!important;color:var(--ink);border-color:var(--line)!important;box-shadow:var(--shadow)}
+.tab{background:#101620;color:#b6c1d1;border-color:var(--line)}
+.tab.active,.btn.primary{background:#287fe5!important;color:#fff!important;border-color:#287fe5!important}
+.btn.outline,.btn.ghost,.mini{background:#151e2c;color:#dbe8f8;border-color:#2b3b52}
+input,select,textarea{background:#0b1019!important;color:#f4f7fb!important;border-color:#2b3749!important}
+input::placeholder,textarea::placeholder{color:#7e8da3}
+.track,.barbg{background:#222d3d!important}
+.fill{background:linear-gradient(90deg,#8b5cf6,#c4b5fd)!important}
+.empty{border-color:#2b3749;color:var(--muted)}
+.empty b,.book h4,.item h4,.panel h3,.formbox h4{color:#f4f7fb}
+.dangerzone{background:#21151b!important;border-color:#60303a!important}
+.toast{background:#287fe5;color:#fff}
+footer{color:#7e8da3}
+canvas{max-width:100%}
+
+/* Daily report: compact stacked book cards, page counts highlighted in purple. */
+.daily-books{display:grid;grid-template-columns:1fr;gap:9px;margin-top:12px}
+.daily-book{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#0d1420}
+.daily-book-name{font-size:12px;color:#e6edf8;min-width:0;overflow-wrap:anywhere}
+.daily-book-count{font-size:12px;font-weight:700;color:#c4b5fd;white-space:nowrap;direction:rtl}
+.daily-empty{font-size:11px;color:var(--muted);padding:8px 0}
+@media(min-width:600px){.daily-book{padding:9px 12px}}
+
+</style>
+</head>
+<body>
+<header class="topbar"><div class="logo">ST</div><div><h1>Study Track</h1></div></header>
+<main class="wrap">
+<section class="welcome"><div><div class="eyebrow">داشبورد مطالعه</div><h2>Study Track</h2><p class="muted">کتاب‌ها و جلسه‌هایت را ثبت کن و روندت را ببین.</p></div><div class="pill" id="todayLabel">امروز</div></section>
+<section class="stats">
+ <article class="stat"><span class="ico">📚</span><small>کتاب‌های فعال</small><strong id="statBooks">۰</strong></article>
+ <article class="stat"><span class="ico">📖</span><small>صفحات خوانده‌شده</small><strong id="statPages">۰</strong></article>
+ <article class="stat"><span class="ico">📈</span><small>میانگین پیشرفت</small><strong id="statProgress">۰٪</strong></article>
+ 
+</section>
+<nav class="tabs"><button class="tab active" data-tab="dashboard">نمای کلی</button><button class="tab" data-tab="books">کتاب‌ها</button><button class="tab" data-tab="sessions">ثبت صفحات</button><button class="tab" data-tab="backup">پشتیبان‌گیری</button></nav>
+<section class="panel" id="panel-dashboard">
+ <div class="heading"><div><h3>پیشرفت کتاب‌ها</h3><p class="muted">وضعیت هر کتاب در یک نگاه</p></div><button class="btn primary" data-goto="books">+ افزودن کتاب</button></div>
+ <div class="books" id="dashBooks"></div>
+ <div class="heading" style="margin-top:22px"><div><h3>گزارش روزانه کتاب‌ها</h3><p class="muted">تعداد صفحات هر کتاب در هر یک از ۷ روز اخیر</p></div></div><div id="weeklyReport" class="items"></div>
+</section>
+<section class="panel hidden" id="panel-books">
+ <div class="heading"><div><h3>کتاب‌های من</h3><p class="muted">تعداد صفحات و درصد پیشرفت را مدیریت کن.</p></div></div>
+ <form class="formbox" id="bookForm"><h4 id="bookFormTitle">افزودن کتاب جدید</h4><input type="hidden" id="bookId"><div class="grid">
+ <label>نام کتاب<input id="bookTitle" required maxlength="100" placeholder="مثلاً اصول مدیریت"></label>
+ <label>تعداد کل صفحات<input id="bookTotal" type="number" required min="1" step="1" placeholder="۲۰۰"></label>
+ <label>صفحه فعلی<input id="bookCurrent" type="number" min="0" step="1" value="0"></label>
+</div>
+ <div class="formactions"><button class="btn primary" type="submit">ذخیره کتاب</button><button class="btn ghost hidden" id="cancelBook" type="button">لغو ویرایش</button></div></form>
+ <div id="booksList" class="books"></div>
+</section>
+<section class="panel hidden" id="panel-sessions">
+ <div class="heading"><div><h3>ثبت صفحات مطالعه‌شده</h3><p class="muted">فقط کتاب، تاریخ و تعداد صفحه‌هایی که خوانده‌ای را ثبت کن.</p></div></div>
+ <form class="formbox" id="sessionForm"><div class="grid">
+ <label>کتاب<select id="sessionBook" required><option value="">ابتدا کتاب اضافه کن</option></select></label><label>تاریخ مطالعه<input id="sessionDate" type="date" required></label>
+ <label>تعداد صفحات مطالعه‌شده<input id="sessionPages" type="number" min="1" step="1" required placeholder="مثلاً ۱۵"></label>
+ </div><div class="formactions"><button class="btn primary" type="submit">ثبت مطالعه</button></div><p class="hint">با ثبت تعداد صفحات، صفحه فعلی کتاب به‌صورت خودکار افزایش پیدا می‌کند.</p></form>
+ <div class="heading"><h3>سوابق مطالعه</h3><span class="muted" id="sessionCount">۰ مورد</span></div><div id="sessionsList" class="items"></div>
+ <div class="heading" style="margin-top:22px"><div><h3>آمار روزهای هفته</h3><p class="muted">تعداد صفحات مطالعه‌شده از هر کتاب به تفکیک روز</p></div></div><div id="weeklyReportSessions" class="items"></div>
+</section>
+<section class="panel hidden" id="panel-backup">
+ <div class="heading"><div><h3>پشتیبان‌گیری و انتقال</h3><p class="muted">اطلاعات در همین مرورگر ذخیره می‌شود؛ برای انتقال از فایل پشتیبان استفاده کن.</p></div></div>
+ <div class="backupgrid"><article class="backupcard"><div style="font-size:25px">⬇️</div><h4>گرفتن نسخه پشتیبان</h4><p>یک فایل JSON از فهرست کتاب‌ها و سوابق صفحات مطالعه ذخیره کن.</p><button class="btn primary" id="exportBtn">دریافت فایل پشتیبان</button></article>
+ <article class="backupcard"><div style="font-size:25px">⬆️</div><h4>بازیابی نسخه پشتیبان</h4><p>با انتخاب فایل پشتیبان، اطلاعات فعلی با آن جایگزین می‌شود.</p><label class="btn outline filelabel">انتخاب فایل<input id="importFile" type="file" accept=".json,application/json"></label></article></div>
+ <div class="dangerzone"><h4>پاک کردن همه اطلاعات</h4><p class="muted">این کار برگشت‌پذیر نیست. قبلش پشتیبان بگیر.</p><button class="btn danger" id="clearBtn">حذف همه اطلاعات</button></div>
+ <p class="hint">این نسخه اطلاعات را به سرور ارسال نمی‌کند. پاک‌کردن داده‌های مرورگر ممکن است اطلاعات را حذف کند.</p>
+</section>
+</main>
+<footer><span>StudyTrack · نسخه تک‌فایلی</span><span>اطلاعات فقط در همین مرورگر ذخیره می‌شود 🌿</span></footer><div id="toast" class="toast" role="status"></div>
+<script>
+(()=>{"use strict";
+const KEY="studytrack-final-v1";
+const $=id=>document.getElementById(id);
+const today=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
+const id=()=>Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
+const fa=n=>new Intl.NumberFormat("fa-IR").format(n);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const datefmt=s=>s?new Intl.DateTimeFormat("fa-IR",{year:"numeric",month:"short",day:"numeric"}).format(new Date(s+"T12:00:00")):"بدون تاریخ";
+let state={books:[],sessions:[],plans:[]};
+function load(){try{let raw=localStorage.getItem(KEY);if(raw){state={...state,...JSON.parse(raw)};state.sessions=(state.sessions||[]).map(r=>{let q={...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))};delete q.minutes;delete q.start;delete q.end;delete q.note;return q});state.plans=(state.plans||[]).map(p=>{let q={...p};delete q.minutes;return q})}}catch(e){alert("خواندن اطلاعات ذخیره‌شده ممکن نشد؛ شاید مرورگر حالت خصوصی دارد.")}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){alert("ذخیره‌سازی مرورگر پر شده یا غیرفعال است. از بخش پشتیبان‌گیری فایل بگیر.")}}
+function toast(s){$("toast").textContent=s;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2300)}
+function pct(b){return b.total?Math.min(100,Math.round((Number(b.current)||0)/Number(b.total)*100)):0}
+function empty(title,desc){return `<div class="empty"><b>${esc(title)}</b>${esc(desc||"")}</div>`}
+function bookCard(b){let p=pct(b),left=Math.max(0,b.total-b.current);return `<article class="book"><div class="booktop"><div><h4>${esc(b.title)}</h4></div></div><div class="progress-line"><span class="pct">${fa(p)}٪</span><div class="track"><div class="fill" style="width:${p}%"></div></div></div><div class="meta"><span>${fa(b.current)} صفحه خوانده‌شده</span><span>${fa(left)} صفحه باقی‌مانده</span><span>${fa(b.total)} صفحه در کل</span></div><div class="actions"><button class="mini" data-edit-book="${b.id}">ویرایش</button><button class="mini" data-page="${b.id}">ثبت صفحه فعلی</button><button class="mini red" data-del-book="${b.id}">حذف</button></div></article>`}
+function refresh(){renderStats();renderBookOptions();renderBooks();renderSessions();drawCharts()}
+function renderStats(){let active=state.books.filter(b=>pct(b)<100).length;let avg=state.books.length?Math.round(state.books.reduce((sum,b)=>sum+pct(b),0)/state.books.length):0;let pages=state.sessions.reduce((sum,r)=>sum+Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))),0);$("statBooks").textContent=fa(active);$("statPages").textContent=fa(pages);$("statProgress").textContent=fa(avg)+'٪';$("todayLabel").textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'long',day:'numeric'}).format(new Date())}
+function renderBookOptions(){let options=state.books.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join("");$("sessionBook").innerHTML='<option value="">انتخاب کتاب</option>'+options}
+function renderBooks(){$("booksList").innerHTML=state.books.length?state.books.map(bookCard).join(""):empty("هنوز کتابی اضافه نکرده‌ای","از فرم بالا اولین کتابت را ثبت کن.");$("dashBooks").innerHTML=state.books.length?state.books.slice().sort((a,b)=>pct(b)-pct(a)).slice(0,5).map(bookCard).join(""):empty("لیست کتاب‌ها خالی است","با افزودن اولین کتاب، این بخش تکمیل می‌شود.")}
+function renderSessions(){let arr=state.sessions.slice().sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));$('sessionCount').textContent=fa(arr.length)+' مورد';$('sessionsList').innerHTML=arr.length?arr.map(r=>{let b=state.books.find(x=>x.id===r.bookId),pages=Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)));return `<article class="item"><div class="itemtop"><div><h4>${esc(b?.title||'کتاب حذف‌شده')}</h4><div class="sub">${datefmt(r.date)} · ${fa(pages)} صفحه</div></div><span class="badge">${fa(pages)} صفحه</span></div><div class="actions"><button class="mini red" data-del-session="${r.id}">حذف سابقه</button></div></article>`}).join(''):empty('هنوز سابقه‌ای ثبت نشده','بعد از مطالعه، تعداد صفحه‌ها را ثبت کن.');renderWeeklyReport()}
+function planCard(p){let b=state.books.find(x=>x.id===p.bookId);return `<article class="item"><div class="itemtop"><div><h4>${esc(p.title)}</h4><div class="sub">${datefmt(p.date)}${b?' · '+esc(b.title):''}${p.pages?` · هدف ${fa(p.pages)} صفحه`:''}</div></div><span class="badge ${p.status==='done'?'done':'todo'}">${p.status==='done'?'انجام‌شده':'انجام‌نشده'}</span></div><div class="actions"><button class="mini" data-toggle-plan="${p.id}">${p.status==='done'?'بازگردانی وضعیت':'علامت انجام‌شده'}</button><button class="mini" data-edit-plan="${p.id}">ویرایش</button><button class="mini red" data-del-plan="${p.id}">حذف</button></div></article>`}
+function renderWeeklyReport(){let targets=[$('weeklyReport'),$('weeklyReportSessions')].filter(Boolean);let rows=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;let day=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'short',day:'numeric'}).format(d);let records=state.sessions.filter(r=>r.date===iso).map(r=>({r,b:state.books.find(x=>x.id===r.bookId),pages:Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)))})).filter(x=>x.pages>0);let total=records.reduce((sum,x)=>sum+x.pages,0);let booksHtml=records.length?`<div class="daily-books">${records.map(x=>`<div class="daily-book"><span class="daily-book-name">${esc(x.b?.title||'کتاب حذف‌شده')}</span><span class="daily-book-count">${fa(x.pages)} صفحه</span></div>`).join('')}</div>`:`<div class="daily-empty">مطالعه‌ای ثبت نشده</div>`;rows.push(`<article class="item"><div class="itemtop"><div><h4>${day}</h4><div class="sub">${fa(records.length)} کتاب مطالعه‌شده</div></div><span class="badge">مجموع ${fa(total)} صفحه</span></div>${booksHtml}</article>`)}let html=rows.join('');targets.forEach(el=>el.innerHTML=html)}
+function drawCanvas(c){let r=c.getBoundingClientRect(),ratio=window.devicePixelRatio||1;c.width=Math.max(280,Math.floor(r.width*ratio));c.height=220*ratio;let x=c.getContext('2d');x.scale(ratio,ratio);return{x,w:c.width/ratio,h:220}}
+function drawCharts(){renderWeeklyReport()}
+function tab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.toggle("hidden",p.id!=="panel-"+name));if(name==="dashboard")drawCharts()}
+function resetBook(){$("bookForm").reset();$("bookId").value="";$("bookCurrent").value=0;$("bookFormTitle").textContent="افزودن کتاب جدید";$("cancelBook").classList.add("hidden")}
+$("bookForm").addEventListener("submit",e=>{e.preventDefault();try{const title=$("bookTitle").value.trim();const totalValue=Number($("bookTotal").value);if(!title){toast("لطفاً نام کتاب را وارد کن.");$("bookTitle").focus();return}if(!Number.isFinite(totalValue)||totalValue<1){toast("تعداد کل صفحات باید حداقل ۱ باشد.");$("bookTotal").focus();return}const bid=$("bookId").value||id();const total=Math.floor(totalValue);const current=Math.min(total,Math.max(0,Math.floor(Number($("bookCurrent").value)||0)));const old=state.books.find(b=>b.id===bid);const book={id:bid,title,subject:"",total,current,createdAt:old?.createdAt||Date.now()};if(old)state.books=state.books.map(x=>x.id===bid?book:x);else state.books.push(book);save();refresh();resetBook();toast("کتاب با موفقیت ذخیره شد.")}catch(err){console.error(err);toast("ذخیره کتاب انجام نشد. صفحه را یک‌بار ببند و دوباره باز کن.")}});
+$("sessionForm").addEventListener("submit",e=>{e.preventDefault();let bid=$("sessionBook").value,pages=Math.floor(+$("sessionPages").value||0);if(!bid||pages<1){toast("کتاب و تعداد صفحات را بررسی کن.");return}let date=$("sessionDate").value||today();state.sessions.push({id:id(),bookId:bid,date,pages,createdAt:Date.now()});let b=state.books.find(x=>x.id===bid);if(b)b.current=Math.min(b.total,Math.max(0,Number(b.current)||0)+pages);save();$("sessionForm").reset();$("sessionDate").value=today();refresh();toast("تعداد صفحات ثبت شد.")});
+$("cancelBook").onclick=resetBook;
+document.addEventListener("click",e=>{let t=e.target.closest("[data-tab]");if(t){tab(t.dataset.tab);return}let g=e.target.closest("[data-goto]");if(g){tab(g.dataset.goto);return}let el;
+if(el=e.target.closest("[data-edit-book]")){let b=state.books.find(x=>x.id===el.dataset.editBook);if(!b)return;$("bookId").value=b.id;$("bookTitle").value=b.title;$("bookTotal").value=b.total;$("bookCurrent").value=b.current;$("bookFormTitle").textContent="ویرایش کتاب";$("cancelBook").classList.remove("hidden");tab("books");window.scrollTo({top:0,behavior:"smooth"});return}
+if(el=e.target.closest("[data-page]")){let b=state.books.find(x=>x.id===el.dataset.page),v=prompt(`صفحه فعلی «${b.title}» را وارد کن:`,b.current);if(v!==null&&Number.isFinite(+v)&&+v>=0){b.current=Math.min(b.total,Math.floor(+v));save();refresh();toast("صفحه فعلی به‌روزرسانی شد.")}return}
+if(el=e.target.closest("[data-del-book]")){let b=state.books.find(x=>x.id===el.dataset.delBook);if(confirm(`کتاب «${b.title}» و جلسات مرتبط حذف شوند؟`)){state.books=state.books.filter(x=>x.id!==b.id);state.sessions=state.sessions.filter(s=>s.bookId!==b.id);save();refresh();toast("کتاب حذف شد.")}return}
+if(el=e.target.closest("[data-del-session]")){if(confirm("این جلسه حذف شود؟")){state.sessions=state.sessions.filter(s=>s.id!==el.dataset.delSession);save();refresh();toast("جلسه حذف شد.")}return}
+});
+$("exportBtn").onclick=()=>{let blob=new Blob([JSON.stringify({...state,app:"StudyTrack",version:1,exportedAt:new Date().toISOString()},null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="studytrack-backup-"+today()+".json";a.click();URL.revokeObjectURL(url);toast("فایل پشتیبان دانلود شد.")};
+$("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.books)||!Array.isArray(d.sessions))throw Error("ساختار فایل معتبر نیست");if(confirm("اطلاعات فعلی با این فایل جایگزین شود؟")){state={books:d.books,sessions:(d.sessions||[]).map(r=>({...r,pages:Number(r.pages)||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))})),plans:[]};save();refresh();toast("پشتیبان بازیابی شد.")}}catch(err){alert("فایل پشتیبان معتبر نیست.")}e.target.value=""};
+$("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه پاک شوند؟")){state={books:[],sessions:[],plans:[]};save();refresh();toast("همه اطلاعات پاک شد.")}};
+window.addEventListener("resize",()=>{if(!$("panel-dashboard").classList.contains("hidden"))drawCharts()});
+$("sessionDate").value=today();load();
+refresh();
+})();
+</script>
+
+<script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) { window.addEventListener("load", () => { navigator.serviceWorker.register("./service-worker.js").catch((err) => console.warn("Study Track offline setup was not enabled:", err)); }); }
+</script>
+</body>
+</html>
+<style>
+/* Final refinements requested for the preview */
+.progress-line{display:flex;direction:ltr;align-items:center;gap:10px;margin:10px 0 7px}
+.progress-line .pct{flex:0 0 auto;min-width:42px;text-align:left;color:#c4b5fd;font-size:15px;direction:rtl}
+.progress-line .track{flex:1;margin:0;background:#25263b!important;height:9px}
+.progress-line .fill{background:linear-gradient(90deg,#7c3aed 0%,#a78bfa 52%,#e9d5ff 100%)!important}
+.daily-book-count{color:#c4b5fd!important}
+#weeklyReport .itemtop>.badge,#weeklyReportSessions .itemtop>.badge{background:#292044!important;color:#e9d5ff!important;border:1px solid #554078;font-weight:700}
+#weeklyReport .itemtop>.badge::first-letter,#weeklyReportSessions .itemtop>.badge::first-letter{color:#e9d5ff}
+</style>
