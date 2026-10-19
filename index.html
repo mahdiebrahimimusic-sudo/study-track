@@ -368,7 +368,20 @@ initializeAuth();
 </script>
 
 <script>
-if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) { window.addEventListener("load", () => { navigator.serviceWorker.register("./service-worker.js").catch((err) => console.warn("StudyTrack offline setup was not enabled:", err)); }); }
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" });
+      // Check for a newer app version whenever the app opens.
+      registration.update().catch(() => {});
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") registration.update().catch(() => {});
+      });
+    } catch (err) {
+      console.warn("StudyTrack offline setup was not enabled:", err);
+    }
+  });
+}
 </script>
 </body>
 </html>
