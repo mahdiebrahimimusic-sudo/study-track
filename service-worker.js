@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "study-track-pwa-v2";
+const CACHE_NAME = "study-track-pwa-v3";
 const APP_FILES = [
   "./",
   "./index.html",
