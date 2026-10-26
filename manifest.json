@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Study Track",
-  "short_name": "Study Track",
+  "name": "StudyTrack",
+  "short_name": "StudyTrack",
   "description": "Personal reading and study tracker",
   "lang": "fa",
   "dir": "rtl",
