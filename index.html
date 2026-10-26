@@ -368,17 +368,25 @@ initializeAuth();
 </script>
 
 <script>
+// StudyTrack: check for app updates whenever the app opens or returns to the foreground.
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  let updateReloadScheduled = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    // Reload once when a new worker takes control, so the page uses the new app files.
+    if (updateReloadScheduled) return;
+    updateReloadScheduled = true;
+    window.location.reload();
+  });
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" });
-      // Check for a newer app version whenever the app opens.
-      registration.update().catch(() => {});
+      await registration.update().catch(() => {});
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") registration.update().catch(() => {});
       });
+      window.addEventListener("pageshow", () => registration.update().catch(() => {}));
     } catch (err) {
-      console.warn("StudyTrack offline setup was not enabled:", err);
+      console.warn("StudyTrack update check was not available:", err);
     }
   });
 }
