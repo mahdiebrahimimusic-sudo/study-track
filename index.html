@@ -186,6 +186,59 @@ body.light-mode .floating-nav-item.active{background:#e8f1ff;color:#2168c5}
 body{padding-bottom:90px}
 @media(min-width:701px){.floating-nav{bottom:20px}}
 
+
+
+/* Final responsive sizing for the dedicated timer and calendar views */
+#panel-timer{padding:clamp(12px,2.5vw,24px);}
+#timerPanelContent{width:100%;display:flex;justify-content:center;}
+#panel-timer .study-timer-box{width:min(100%,560px);margin:0 auto;padding:clamp(14px,2.5vw,22px);display:flex;flex-direction:column;align-items:stretch;}
+#panel-timer .study-timer-box>.heading{margin-bottom:10px;}
+#panel-timer .timer-controls{width:100%;max-width:100%;}
+#panel-timer .timer-controls label{max-width:100%;}
+#panel-timer .timer-controls select{max-width:100%;padding:8px 10px;}
+#panel-timer .timer-break{min-height:22px;text-align:center;font-size:13px;}
+#panel-timer .timer-face{position:relative;width:min(100%,220px);margin:4px auto 10px;aspect-ratio:1;display:grid;place-items:center;}
+#panel-timer .timer-arc{width:100%;height:100%;margin:0;}
+#panel-timer .timer-display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0;margin:0;font-size:clamp(27px,5vw,38px);line-height:1;}
+#panel-timer .timer-actions{width:100%;gap:8px;}
+#panel-timer .timer-actions button{min-height:40px;padding:8px 10px;}
+#panel-timer .timer-actions.is-idle #timerStartPause{flex-basis:100%;}
+#panel-timer .timer-hint,#panel-timer .hint{text-align:center;margin:8px 0 0;}
+#panel-calendar{padding:clamp(10px,2vw,20px);}
+#calendarPanelContent{width:100%;}
+#panel-calendar .calendar-box{width:min(100%,760px);margin:0 auto!important;padding:clamp(12px,2.2vw,20px);}
+#panel-calendar .calendar-heading{margin-bottom:12px;}
+#panel-calendar .calendar-controls{display:grid;grid-template-columns:40px minmax(0,1fr) minmax(0,1fr) 40px;gap:7px;align-items:center;margin:12px 0;}
+#panel-calendar .calendar-controls label{display:flex;align-items:center;gap:5px;min-width:0;font-size:11px;white-space:nowrap;}
+#panel-calendar .calendar-controls select{width:100%;min-width:0;padding:7px 5px;border:1px solid #2b3749;border-radius:8px;background:#0b1019;color:var(--ink);font-size:12px;}
+#panel-calendar .calendar-controls>.btn{min-width:0;padding:6px 8px;}
+#panel-calendar .calendar-weekdays,#panel-calendar .monthly-calendar{gap:5px;}
+#panel-calendar .calendar-day{min-height:clamp(42px,7vw,58px);padding:5px 1px 3px;}
+#panel-calendar .today-note-preview{margin-top:16px;padding:12px 14px;}
+#panel-calendar .today-note-preview p{margin:4px 0 0;}
+body.light-mode #panel-calendar .calendar-controls select{background:#fff!important;color:#171923!important;border-color:#d1d9e5!important;}
+@media(max-width:700px){
+ #panel-timer{padding:10px;}
+ #panel-timer .study-timer-box{max-width:100%;padding:12px;}
+ #panel-timer .timer-face{width:min(62vw,190px);margin:2px auto 8px;}
+ #panel-timer .timer-display{font-size:clamp(26px,8vw,34px);}
+ #panel-timer .timer-actions{gap:6px;}
+ #panel-timer .timer-actions button{font-size:11px;padding:8px 6px;}
+ #panel-calendar{padding:8px;}
+ #panel-calendar .calendar-box{padding:10px;}
+ #panel-calendar .calendar-controls{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 34px;gap:4px;}
+ #panel-calendar .calendar-controls label{gap:3px;font-size:10px;}
+ #panel-calendar .calendar-controls select{font-size:11px;padding:7px 2px;}
+ #panel-calendar .calendar-day{min-height:42px;}
+ #panel-calendar .calendar-day .day-number{font-size:11px;}
+ #panel-calendar .calendar-day .day-mood{font-size:13px;min-height:14px;}
+}
+@media(max-width:360px){
+ #panel-timer .timer-face{width:min(58vw,170px);}
+ #panel-calendar .calendar-weekdays,#panel-calendar .monthly-calendar{gap:3px;}
+ #panel-calendar .calendar-day{min-height:38px;}
+}
+
 </style>
 
 <style>
@@ -238,7 +291,6 @@ body{padding-bottom:90px}
 </section></div></section>
 <section class="panel hidden" id="panel-calendar"><div id="calendarPanelContent"><section class="calendar-box">
 <div class="heading"><div><h3><span class="section-heading">تقویم مطالعه و یادداشت روزانه</span></h3><p class="muted">برای ثبت یادداشت و حال‌وهوای هر روز، روی تاریخ کلیک کن.</p></div></div>
-<div class="today-note-preview"><strong>یادداشت امروز</strong><span id="todayNoteMood"></span><p id="todayNoteText">هنوز یادداشتی برای امروز ثبت نکردی.</p></div>
 <div class="calendar-controls">
 <button class="btn ghost" id="calendarPrev" type="button" aria-label="ماه قبل">‹</button>
 <label>ماه <select id="calendarMonth"></select></label>
@@ -247,6 +299,7 @@ body{padding-bottom:90px}
 </div>
 <div class="calendar-weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
 <div class="monthly-calendar" id="monthlyCalendar"></div>
+<div class="today-note-preview"><div class="today-note-preview-head"><strong>یادداشت امروز</strong><span id="todayNoteMood"></span></div><p id="todayNoteText">هنوز یادداشتی برای امروز ثبت نکردی.</p></div>
 </section></div></section>
 <section class="panel hidden" id="panel-weekly"><div id="weeklyPanelContent"><section class="weekly-time-box">
  <div class="heading"><div><h3><span class="section-heading"><svg class="section-icon purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-7h4v7"/></svg><span>نمودار زمان مطالعه هفتگی</span></span></h3><p class="muted">برای دیدن جزئیات هر روز، روی ستون آن کلیک کن.</p></div></div>
