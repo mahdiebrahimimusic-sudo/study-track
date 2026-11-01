@@ -226,8 +226,28 @@ body{padding-bottom:90px}
  <section class="dashboard-progress-section"><div class="heading"><div><h3><span class="section-heading"><svg class="section-icon blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v17H5.5A2.5 2.5 0 0 0 3 22V5.5Z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H13v17h5.5A2.5 2.5 0 0 1 21 22V5.5Z"/></svg><span>پیشرفت کتاب‌ها</span></span></h3><p class="muted">وضعیت هر کتاب در یک نگاه</p></div><button class="btn primary" data-goto="books">+ افزودن کتاب</button></div><div class="dashboard-progress"><div class="books" id="dashBooks"></div></div></section>
 
 </section>
-<section class="panel hidden" id="panel-timer"><div id="timerPanelContent"></div></section>
-<section class="panel hidden" id="panel-calendar"><div id="calendarPanelContent"></div></section>
+<section class="panel hidden" id="panel-timer"><div id="timerPanelContent"><section class="study-timer-box">
+<div class="heading"><div><h3><span class="section-heading">زمان‌سنج مطالعه</span></h3><p class="muted">زمان مطالعه‌ات را ثبت کن.</p></div></div>
+<div class="timer-controls"><label for="timerBook">کتاب مورد مطالعه</label><select id="timerBook"><option value="">انتخاب کتاب</option></select></div>
+<div class="timer-break" id="timerBreakMessage"></div>
+<div class="timer-face">
+<svg class="timer-arc" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="timerArcGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><circle class="timer-arc-track" cx="50" cy="50" r="45"></circle><circle class="timer-arc-fill" id="timerArcFill" cx="50" cy="50" r="45" transform="rotate(-90 50 50)"></circle></svg>
+<div class="timer-display" id="timerDisplay">۰۰:۰۰</div></div>
+<div class="timer-actions" id="timerActions"><button class="btn primary" id="timerStartPause" type="button">شروع مطالعه</button><button class="btn ghost" id="timerSave" type="button">ثبت زمان</button><button class="btn ghost" id="timerReset" type="button">بازنشانی</button></div>
+<p class="hint" id="timerHint">برای شروع، یک کتاب انتخاب کن.</p>
+</section></div></section>
+<section class="panel hidden" id="panel-calendar"><div id="calendarPanelContent"><section class="calendar-box">
+<div class="heading"><div><h3><span class="section-heading">تقویم مطالعه و یادداشت روزانه</span></h3><p class="muted">برای ثبت یادداشت و حال‌وهوای هر روز، روی تاریخ کلیک کن.</p></div></div>
+<div class="today-note-preview"><strong>یادداشت امروز</strong><span id="todayNoteMood"></span><p id="todayNoteText">هنوز یادداشتی برای امروز ثبت نکردی.</p></div>
+<div class="calendar-controls">
+<button class="btn ghost" id="calendarPrev" type="button" aria-label="ماه قبل">‹</button>
+<label>ماه <select id="calendarMonth"></select></label>
+<label>سال <select id="calendarYear"></select></label>
+<button class="btn ghost" id="calendarNext" type="button" aria-label="ماه بعد">›</button>
+</div>
+<div class="calendar-weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
+<div class="monthly-calendar" id="monthlyCalendar"></div>
+</section></div></section>
 <section class="panel hidden" id="panel-weekly"><div id="weeklyPanelContent"><section class="weekly-time-box">
  <div class="heading"><div><h3><span class="section-heading"><svg class="section-icon purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-7h4v7"/></svg><span>نمودار زمان مطالعه هفتگی</span></span></h3><p class="muted">برای دیدن جزئیات هر روز، روی ستون آن کلیک کن.</p></div></div>
  <div id="weeklyTimeChart" class="weekly-time-chart"></div>
