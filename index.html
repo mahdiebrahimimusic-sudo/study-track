@@ -173,6 +173,19 @@ body.light-mode .calendar-heading .muted,body.light-mode .study-timer-box .muted
 
 .brand-title{display:flex;align-items:center;gap:9px;direction:rtl;justify-content:flex-start}.brand-icon{width:30px;height:30px;flex:0 0 auto;color:#4b9cff;filter:drop-shadow(0 0 5px #287fe533)}body.light-mode .brand-icon{color:#287fe5}
 
+
+/* Bottom floating navigation for the main study tools */
+.floating-nav{position:fixed;z-index:80;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(440px,calc(100% - 28px));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:7px;border:1px solid #2b3b53;border-radius:20px;background:rgba(13,20,32,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 36px #0008}
+.floating-nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;padding:7px 3px;border:0;border-radius:13px;background:transparent;color:#9aa7ba;font:inherit;cursor:pointer}
+.floating-nav-item svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.floating-nav-item span{font-size:10px;line-height:1.5;white-space:nowrap}
+.floating-nav-item.active{background:#1b3555;color:#78b7ff}
+body.light-mode .floating-nav{background:rgba(255,255,255,.95);border-color:#dce2eb;box-shadow:0 12px 36px #17203325}
+body.light-mode .floating-nav-item{color:#697586}
+body.light-mode .floating-nav-item.active{background:#e8f1ff;color:#2168c5}
+body{padding-bottom:90px}
+@media(min-width:701px){.floating-nav{bottom:20px}}
+
 </style>
 
 <style>
@@ -194,6 +207,12 @@ body.light-mode .calendar-heading .muted,body.light-mode .study-timer-box .muted
 </section>
 
 <div class="account-bar hidden" id="accountBar"><div class="account-left"><button type="button" class="top-backup-btn" id="topBackupBtn">پشتیبان‌گیری</button><div class="theme-switch" role="group" aria-label="حالت نمایش"><button type="button" id="themeDark" class="active" aria-label="دارک مود" title="دارک مود"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z"/></svg></button><button type="button" id="themeLight" aria-label="لایت مود" title="لایت مود"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button></div></div><div class="account-right"><span id="accountEmail" class="account-email"></span><button class="btn outline account-logout" id="signOutBtn" type="button">خروج</button></div></div>
+<nav class="floating-nav" id="floatingNav" aria-label="میانبرهای داشبورد">
+ <button type="button" class="floating-nav-item active" data-tab="dashboard" aria-label="پیشرفت کتاب‌ها" title="پیشرفت کتاب‌ها"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5c3.2-.9 6.2-.3 9 2v13c-2.8-2.3-5.8-2.9-9-2z"/><path d="M21 5.5c-3.2-.9-6.2-.3-9 2v13c2.8-2.3 5.8-2.9 9-2z"/></svg><span>پیشرفت</span></button>
+ <button type="button" class="floating-nav-item" data-tab="timer" aria-label="زمان‌سنج" title="زمان‌سنج"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8.5"/><path d="M12 8v5l3.5 2M9 2h6M12 2v2"/></svg><span>زمان‌سنج</span></button>
+ <button type="button" class="floating-nav-item" data-tab="calendar" aria-label="تقویم" title="تقویم"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 10h18M7 14h2m3 0h2m-7 3h2m3 0h2"/></svg><span>تقویم</span></button>
+ <button type="button" class="floating-nav-item" data-tab="weekly" aria-label="نمودار هفتگی" title="نمودار هفتگی"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-7h4v7"/></svg><span>هفتگی</span></button>
+</nav>
 <main class="wrap">
 <section class="welcome"><div><div class="eyebrow">داشبورد مطالعه</div><h2 class="brand-title"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5c3.2-.9 6.2-.3 9 2v13c-2.8-2.3-5.8-2.9-9-2z"/><path d="M21 5.5c-3.2-.9-6.2-.3-9 2v13c2.8-2.3 5.8-2.9 9-2z"/><path d="M12 7.5v13"/></svg><span>StudyTrack</span></h2><p class="muted">کتاب‌ها و جلسه‌هایت را ثبت کن و روندت را ببین.</p></div><div class="pill" id="todayLabel">امروز</div></section>
 <section class="stats">
@@ -204,36 +223,15 @@ body.light-mode .calendar-heading .muted,body.light-mode .study-timer-box .muted
 </section>
 
 <section class="panel" id="panel-dashboard">
- <div class="dashboard-top-grid">
- <section class="calendar-box" aria-label="تقویم ماهانه">
-  <div class="heading calendar-heading"><div><h3><span class="section-heading"><svg class="section-icon blue" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M16 3v4M8 3v4M3 10h18M7 14h2m3 0h2m-7 3h2m3 0h2"/></svg><span>تقویم ماهانه</span></span></h3><p class="muted">برای ثبت یادداشت یا مود، روی یک روز بزن.</p></div></div>
-  <div class="calendar-nav"><button type="button" class="mini" id="calendarPrev" aria-label="ماه قبل">‹</button><select id="calendarMonth" aria-label="ماه"></select><select id="calendarYear" aria-label="سال"></select><button type="button" class="mini" id="calendarNext" aria-label="ماه بعد">›</button></div>
-  <div class="calendar-weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
-  <div id="monthlyCalendar" class="monthly-calendar"></div>
-  <div class="today-note-preview" id="todayNotePreview" aria-live="polite"><div class="today-note-preview-head"><span class="today-note-preview-title"><span class="section-heading"><svg class="section-icon blue small" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg><span>یادداشت امروز</span></span></span><span class="today-note-preview-mood" id="todayNoteMood"></span></div><div class="today-note-preview-text" id="todayNoteText"></div></div>
- </section>
- <div class="study-timer-box">
-  <div class="heading"><div><h3><span class="section-heading"><svg class="section-icon mint" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8.5"/><path d="M12 8v5l3.5 2M9 2h6M12 2v2"/></svg><span>زمان‌سنج مطالعه</span></span></h3><p class="muted">زمان مطالعه را برای یکی از کتاب‌ها ثبت کن.</p></div></div>
-  <div class="timer-controls"><label>کتاب مورد مطالعه<select id="timerBook"><option value="">انتخاب کتاب</option></select></label></div>
-  <div class="timer-arc-wrap">
-   <div class="timer-break" id="timerBreakMessage" aria-live="polite"></div>
-   <svg class="timer-arc" viewBox="0 0 200 108" role="img" aria-label="پیشرفت زمان یک ساعت مطالعه">
-    <defs><linearGradient id="timerArcGradient" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="52%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#e9d5ff"/></linearGradient></defs>
-    <path class="timer-arc-track" d="M 12 100 A 88 88 0 0 1 188 100" pathLength="283"/>
-    <path class="timer-arc-fill" id="timerArcFill" d="M 12 100 A 88 88 0 0 1 188 100" pathLength="283"/>
-   </svg>
-   <div class="timer-display" id="timerDisplay">۰۰:۰۰</div>
-  </div>
-  <div class="timer-actions is-idle" id="timerActions"><button class="btn primary" id="timerStartPause" type="button">شروع مطالعه</button><button class="btn outline" id="timerSave" type="button" disabled style="display:none">ثبت زمان</button><button class="btn ghost" id="timerReset" type="button" style="display:none">بازنشانی</button></div>
-  <p class="hint" id="timerHint">برای شروع، یک کتاب انتخاب کن.</p>
- </div>
- </div>
  <section class="dashboard-progress-section"><div class="heading"><div><h3><span class="section-heading"><svg class="section-icon blue" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v17H5.5A2.5 2.5 0 0 0 3 22V5.5Z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H13v17h5.5A2.5 2.5 0 0 1 21 22V5.5Z"/></svg><span>پیشرفت کتاب‌ها</span></span></h3><p class="muted">وضعیت هر کتاب در یک نگاه</p></div><button class="btn primary" data-goto="books">+ افزودن کتاب</button></div><div class="dashboard-progress"><div class="books" id="dashBooks"></div></div></section>
- <section class="weekly-time-box">
-  <div class="heading"><div><h3><span class="section-heading"><svg class="section-icon purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-7h4v7"/></svg><span>نمودار زمان مطالعه هفتگی</span></span></h3><p class="muted">برای دیدن جزئیات هر روز، روی ستون آن کلیک کن.</p></div></div>
-  <div id="weeklyTimeChart" class="weekly-time-chart"></div>
- </section>
+
 </section>
+<section class="panel hidden" id="panel-timer"><div id="timerPanelContent"></div></section>
+<section class="panel hidden" id="panel-calendar"><div id="calendarPanelContent"></div></section>
+<section class="panel hidden" id="panel-weekly"><div id="weeklyPanelContent"><section class="weekly-time-box">
+ <div class="heading"><div><h3><span class="section-heading"><svg class="section-icon purple" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-7h4v7"/></svg><span>نمودار زمان مطالعه هفتگی</span></span></h3><p class="muted">برای دیدن جزئیات هر روز، روی ستون آن کلیک کن.</p></div></div>
+ <div id="weeklyTimeChart" class="weekly-time-chart"></div>
+</section></div></section>
 <section class="panel hidden" id="panel-books">
  <div class="heading"><div><h3>کتاب‌های من</h3><p class="muted">تعداد صفحات و درصد پیشرفت را مدیریت کن.</p></div></div>
  <form class="formbox" id="bookForm"><h4 id="bookFormTitle">افزودن کتاب جدید</h4><input type="hidden" id="bookId"><div class="grid">
@@ -312,12 +310,12 @@ function formatDuration(seconds){let total=Math.min(3600,Math.floor(Math.max(0,s
 function timerCurrentElapsed(){return timerElapsed+(timerStartedAt?Math.floor((Date.now()-timerStartedAt)/1000):0)}
 function renderTimerBookOptions(){let el=$("timerBook"),selected=el.value;el.innerHTML='<option value="">انتخاب کتاب</option>'+state.books.map(b=>`<option value="${esc(b.id)}">${esc(b.title)}</option>`).join("");if(state.books.some(b=>b.id===selected))el.value=selected;else if(!timerStartedAt)el.value=""}
 function updateTimerUI(){let seconds=Math.min(3600,timerCurrentElapsed()),progress=seconds/3600,box=$("timerArcFill").closest(".study-timer-box"),idle=!timerStartedAt&&seconds===0&&!timerBreak;$("timerActions").classList.toggle("is-idle",idle);$("timerSave").style.display=idle?"none":"";$("timerReset").style.display=idle?"none":"";$("timerDisplay").textContent=formatDuration(seconds);$("timerArcFill").style.strokeDashoffset=String(283*(1-progress));box.classList.toggle("timer-complete",timerBreak);$("timerBreakMessage").textContent=timerBreak?"وقت استراحته :)":"";$("timerStartPause").textContent=timerBreak?"ادامه مطالعه":timerStartedAt?"توقف موقت":seconds>0?"ادامه مطالعه":"شروع مطالعه";$("timerSave").disabled=seconds<1||!!timerStartedAt||timerBreak;$("timerBook").disabled=!!timerStartedAt||timerBreak;$("timerHint").textContent=timerBreak?"یک ساعت مطالعه کامل شد. بعد از استراحت، ادامه بده.":timerStartedAt?"زمان‌سنج در حال اجراست؛ برای ثبت زمان کمتر از یک ساعت، توقف موقت را بزن.":seconds>0?"زمان ثبت‌نشده آماده ذخیره است.":"برای شروع، یک کتاب انتخاب کن.";updateDailyStudy();renderWeeklyTimeChart()}
-function updateDailyStudy(){let pagesToday=(state.sessions||[]).filter(x=>x.date===today()).reduce((sum,x)=>sum+Number(x.pages||Math.max(0,(Number(x.end)||0)-(Number(x.start)||0))),0);let totalSeconds=pagesToday*120;$("statStudyTime").textContent=formatStudyTime(totalSeconds)}
+function updateDailyStudy(){let pagesToday=(state.sessions||[]).filter(x=>x.date===today()).reduce((sum,x)=>sum+Number(x.pages||Math.max(0,(Number(x.end)||0)-(Number(x.start)||0))),0);let totalSeconds=pagesToday*120;$("statPages").textContent=fa(pagesToday)+" صفحه";$("statStudyTime").textContent=formatStudyTime(totalSeconds)}
 function completeTimerHour(){clearInterval(timerInterval);timerInterval=null;timerElapsed=3600;timerStartedAt=null;timerBreak=true;let bookId=$("timerBook").value;if(bookId){state.timeLogs=state.timeLogs||[];state.timeLogs.push({id:id(),bookId,date:today(),seconds:3600,createdAt:Date.now()});save()}updateTimerUI();renderWeeklyReport();toast("یک ساعت مطالعه کامل شد؛ وقت استراحته!")}
 $("timerStartPause").addEventListener("click",()=>{if(timerBreak){timerBreak=false;timerElapsed=0;timerStartedAt=Date.now();timerInterval=setInterval(()=>{if(timerCurrentElapsed()>=3600){completeTimerHour();return}updateTimerUI()},1000);updateTimerUI();return}if(timerStartedAt){timerElapsed=timerCurrentElapsed();timerStartedAt=null;clearInterval(timerInterval);timerInterval=null;updateTimerUI();return}if(!$("timerBook").value){toast("ابتدا کتاب مورد مطالعه را انتخاب کن.");return}if(timerElapsed>=3600)timerElapsed=0;timerStartedAt=Date.now();timerInterval=setInterval(()=>{if(timerCurrentElapsed()>=3600){completeTimerHour();return}updateTimerUI()},1000);updateTimerUI()});
 $("timerReset").addEventListener("click",()=>{clearInterval(timerInterval);timerInterval=null;timerStartedAt=null;timerElapsed=0;timerBreak=false;updateTimerUI()});
 $("timerSave").addEventListener("click",()=>{let seconds=timerCurrentElapsed(),bookId=$("timerBook").value;if(timerStartedAt||seconds<1||!bookId||timerBreak){toast("زمان‌سنج را متوقف کن و یک کتاب انتخاب کن.");return}state.timeLogs=state.timeLogs||[];state.timeLogs.push({id:id(),bookId,date:today(),seconds,createdAt:Date.now()});save();timerElapsed=0;updateTimerUI();updateDailyStudy();renderWeeklyReport();toast("زمان مطالعه ثبت شد.")});
-function renderStats(){let active=state.books.filter(b=>pct(b)<100).length;let avg=state.books.length?Math.round(state.books.reduce((sum,b)=>sum+pct(b),0)/state.books.length):0;let pages=state.sessions.reduce((sum,r)=>sum+Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))),0);$("statBooks").textContent=fa(active)+' کتاب';$("statPages").textContent=fa(pages)+' صفحه';$("statProgress").textContent=fa(avg)+' درصد';$("todayLabel").textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'long',day:'numeric'}).format(new Date())}
+function renderStats(){let active=state.books.filter(b=>pct(b)<100).length;let avg=state.books.length?Math.round(state.books.reduce((sum,b)=>sum+pct(b),0)/state.books.length):0;let pagesToday=state.sessions.filter(r=>r.date===today()).reduce((sum,r)=>sum+Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0))),0);$("statBooks").textContent=fa(active)+' کتاب';$("statPages").textContent=fa(pagesToday)+' صفحه';$("statProgress").textContent=fa(avg)+' درصد';$("todayLabel").textContent=new Intl.DateTimeFormat('fa-IR',{weekday:'long',month:'long',day:'numeric'}).format(new Date())}
 function renderBookOptions(){let options=state.books.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join("");$("sessionBook").innerHTML='<option value="">انتخاب کتاب</option>'+options}
 function renderBooks(){$("booksList").innerHTML=state.books.length?state.books.map(bookCard).join(""):empty("هنوز کتابی اضافه نکرده‌ای","از فرم بالا اولین کتابت را ثبت کن.");$("dashBooks").innerHTML=state.books.length?state.books.slice().sort((a,b)=>pct(b)-pct(a)).slice(0,5).map(bookCard).join(""):empty("لیست کتاب‌ها خالی است","با افزودن اولین کتاب، این بخش تکمیل می‌شود.")}
 function renderSessions(){let arr=state.sessions.slice().sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));$('sessionCount').textContent=fa(arr.length)+' مورد';$('sessionsList').innerHTML=arr.length?arr.map(r=>{let b=state.books.find(x=>x.id===r.bookId),pages=Number(r.pages||Math.max(0,(Number(r.end)||0)-(Number(r.start)||0)));return `<article class="item"><div class="itemtop"><div><h4>${esc(b?.title||'کتاب حذف‌شده')}</h4><div class="sub">${datefmt(r.date)} · ${fa(pages)} صفحه</div></div><span class="badge">${fa(pages)} صفحه</span></div><div class="actions"><button class="mini red" data-del-session="${r.id}">حذف سابقه</button></div></article>`}).join(''):empty('هنوز سابقه‌ای ثبت نشده','بعد از مطالعه، تعداد صفحه‌ها را ثبت کن.');renderWeeklyReport()}
@@ -345,7 +343,14 @@ function saveCalendarNote(){let text=$('calendarNoteText').value.trim();if(text|
 $('calendarPrev').addEventListener('click',()=>changeCalendarMonth(-1));$('calendarNext').addEventListener('click',()=>changeCalendarMonth(1));$('calendarMonth').addEventListener('change',e=>{calendarView.month=Number(e.target.value);renderMonthlyCalendar()});$('calendarYear').addEventListener('change',e=>{calendarView.year=Number(e.target.value);renderMonthlyCalendar()});$('monthlyCalendar').addEventListener('click',e=>{let b=e.target.closest('[data-calendar-date]');if(b)openCalendarNote(b.dataset.calendarDate)});$('calendarNoteClose').addEventListener('click',()=>$('calendarNoteModal').classList.remove('open'));$('calendarNoteModal').addEventListener('click',e=>{if(e.target===$('calendarNoteModal'))$('calendarNoteModal').classList.remove('open')});$('moodPicker').addEventListener('click',e=>{let b=e.target.closest('[data-mood]');if(!b)return;calendarSelectedMood=calendarSelectedMood===b.dataset.mood?'':b.dataset.mood;document.querySelectorAll('#moodPicker [data-mood]').forEach(x=>x.classList.toggle('selected',x.dataset.mood===calendarSelectedMood))});$('calendarNoteSave').addEventListener('click',saveCalendarNote);$('calendarNoteDelete').addEventListener('click',()=>{delete calendarNotes[calendarSelectedDate];try{localStorage.setItem('studytrack-preview-calendar-notes',JSON.stringify(calendarNotes))}catch(e){}$('calendarNoteText').value='';calendarSelectedMood='';document.querySelectorAll('#moodPicker [data-mood]').forEach(b=>b.classList.remove('selected'));renderMonthlyCalendar();renderTodayNotePreview();$('calendarNoteModal').classList.remove('open');toast('اطلاعات این روز پاک شد.')});
 function drawCanvas(c){let r=c.getBoundingClientRect(),ratio=window.devicePixelRatio||1;c.width=Math.max(280,Math.floor(r.width*ratio));c.height=220*ratio;let x=c.getContext('2d');x.scale(ratio,ratio);return{x,w:c.width/ratio,h:220}}
 function drawCharts(){renderWeeklyReport()}
-function tab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.toggle("hidden",p.id!=="panel-"+name));const topBackupBtn=$("topBackupBtn");if(topBackupBtn){topBackupBtn.textContent=name==="backup"?"بازگشت به صفحه اصلی":"پشتیبان‌گیری";topBackupBtn.setAttribute("aria-label",topBackupBtn.textContent)}if(name==="dashboard")drawCharts()}
+// Relocate the existing widgets without recreating them, preserving their event handlers and state.
+const timerWidget=document.querySelector('.study-timer-box');
+const calendarWidget=document.querySelector('.calendar-box');
+const weeklyWidget=document.querySelector('.weekly-time-box');
+if(timerWidget)$('timerPanelContent').appendChild(timerWidget);
+if(calendarWidget)$('calendarPanelContent').appendChild(calendarWidget);
+if(weeklyWidget)$('weeklyPanelContent').appendChild(weeklyWidget);
+function tab(name){document.querySelectorAll(".floating-nav-item").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll('[id^="panel-"]').forEach(p=>p.classList.toggle("hidden",p.id!=="panel-"+name));const topBackupBtn=$("topBackupBtn");if(topBackupBtn){topBackupBtn.textContent=name==="backup"?"بازگشت به صفحه اصلی":"پشتیبان‌گیری";topBackupBtn.setAttribute("aria-label",topBackupBtn.textContent)}if(name==="dashboard")drawCharts();if(name==="weekly")renderWeeklyTimeChart();window.scrollTo({top:0,behavior:"smooth"})}
 function resetBook(){$("bookForm").reset();$("bookId").value="";$("bookCurrent").value=0;$("bookFormTitle").textContent="افزودن کتاب جدید";$("cancelBook").classList.add("hidden")}
 $("bookForm").addEventListener("submit",e=>{e.preventDefault();try{const title=$("bookTitle").value.trim();const totalValue=Number($("bookTotal").value);if(!title){toast("لطفاً نام کتاب را وارد کن.");$("bookTitle").focus();return}if(!Number.isFinite(totalValue)||totalValue<1){toast("تعداد کل صفحات باید حداقل ۱ باشد.");$("bookTotal").focus();return}const bid=$("bookId").value||id();const total=Math.floor(totalValue);const current=Math.min(total,Math.max(0,Math.floor(Number($("bookCurrent").value)||0)));const old=state.books.find(b=>b.id===bid);const pagesRead=old?Math.max(0,current-Math.max(0,Math.floor(Number(old.current)||0))):0;const book={id:bid,title,subject:"",total,current,createdAt:old?.createdAt||Date.now()};if(old)state.books=state.books.map(x=>x.id===bid?book:x);else state.books.push(book);if(pagesRead>0){state.sessions.push({id:id(),bookId:bid,date:today(),pages:pagesRead,createdAt:Date.now()})}save();refresh();resetBook();toast(pagesRead>0?`${fa(pagesRead)} صفحه به آمار مطالعه اضافه شد.`:"کتاب با موفقیت ذخیره شد.")}catch(err){console.error(err);toast("ذخیره کتاب انجام نشد. صفحه را یک‌بار ببند و دوباره باز کن.")}});
 $("sessionForm").addEventListener("submit",e=>{e.preventDefault();let bid=$("sessionBook").value,pages=Math.floor(+$("sessionPages").value||0);if(!bid||pages<1){toast("کتاب و تعداد صفحات را بررسی کن.");return}let date=$("sessionDate").value||today();state.sessions.push({id:id(),bookId:bid,date,pages,createdAt:Date.now()});let b=state.books.find(x=>x.id===bid);if(b)b.current=Math.min(b.total,Math.max(0,Number(b.current)||0)+pages);save();$("sessionForm").reset();$("sessionDate").value=today();refresh();toast("تعداد صفحات ثبت شد.")});
@@ -363,6 +368,7 @@ $("clearBtn").onclick=()=>{if(confirm("همه اطلاعات برای همیشه
 window.addEventListener("resize",()=>{if(!$("panel-dashboard").classList.contains("hidden"))drawCharts()});
 $("sessionDate").value=today();
 initCalendarView();refresh();updateTimerUI();
+let lastDailyRefresh=today();setInterval(()=>{if(today()!==lastDailyRefresh){lastDailyRefresh=today();renderStats();updateDailyStudy();renderMonthlyCalendar()}},30000);
 initializeAuth();
 })();
 </script>
